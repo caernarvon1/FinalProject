@@ -1,0 +1,52 @@
+.kasir-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+}
+
+.left-section {
+  flex: 2;
+  margin-right: 20px;
+}
+
+.right-section {
+  flex: 1;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.products-table th, .products-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.total-section {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.customer-info {
+  margin-top: 20px;
+}
+
+.customer-info input, .customer-info textarea {
+  width: 100%;
+  margin: 5px 0;
+  padding: 10px;
+}
+
+.payment-method {
+  margin-top: 20px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  font-size: 16px;
+}
