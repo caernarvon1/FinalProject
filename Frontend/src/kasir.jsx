@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './kasir.css'; // Pastikan untuk mengimpor CSS
 import useKasirLogic from './component/LogicKasir'; // Mengimpor logika dari file terpisah
+import axios from 'axios'; // Mengimpor axios
 
 const Kasir = () => {
   const {
@@ -14,17 +15,43 @@ const Kasir = () => {
     setPaymentMethod,
     paymentAmount,
     setPaymentAmount,
-    totalAmount,
     change,
-    handleAddProduct,
+    addProductFromSearch, // Menambahkan fungsi ini
   } = useKasirLogic(); // Menggunakan logika dari hook
+
+  const [searchCode, setSearchCode] = useState(''); // State untuk menyimpan kode barang yang dicari
+
+  const handleSearchProduct = async () => {
+    if (!searchCode) return; // Jika input kosong, tidak melakukan pencarian
+
+    try {
+      const response = await axios.get(`http://localhost:5000/api/produk/${searchCode}`); // Ganti dengan endpoint API Anda
+      const product = response.data;
+
+      if (product) {
+        addProductFromSearch(product); // Menggunakan fungsi dari LogicKasir
+        setSearchCode(''); // Reset input setelah produk ditambahkan
+      } else {
+        alert('Produk tidak ditemukan');
+      }
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      alert('Terjadi kesalahan saat mencari produk');
+    }
+  };
 
   return (
     <div className="kasir-container">
-      
       {/* Left Section - Ordered Products */}
       <div className="left-section">
         <h1>ORDERED PRODUCTS</h1>
+        <input
+          type="text"
+          value={searchCode}
+          onChange={(e) => setSearchCode(e.target.value)}
+          placeholder="Masukkan Kode Barang"
+        />
+        <button onClick={handleSearchProduct}>Cari Produk</button>
         <table className="products-table">
           <thead>
             <tr>
@@ -38,32 +65,10 @@ const Kasir = () => {
           </thead>
           <tbody>
             {products.map((product, index) => (
-              <tr key={product.id}>
+              <tr key={index}>
                 <td>{index + 1}</td>
-                <td>
-                  <input
-                    type="text"
-                    value={product.code}
-                    onChange={(e) => {
-                      const newProducts = [...products];
-                      newProducts[index].code = e.target.value;
-                      setProducts(newProducts);
-                    }}
-                    placeholder="Kode Item"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={product.name}
-                    onChange={(e) => {
-                      const newProducts = [...products];
-                      newProducts[index].name = e.target.value;
-                      setProducts(newProducts);
-                    }}
-                    placeholder="Nama Item"
-                  />
-                </td>
+                <td>{product.code}</td>
+                <td>{product.name}</td>
                 <td>
                   <input
                     type="number"
@@ -76,28 +81,16 @@ const Kasir = () => {
                     placeholder="Qty"
                   />
                 </td>
-                <td>
-                  <input
-                    type="number"
-                    value={product.price}
-                    onChange={(e) => {
-                      const newProducts = [...products];
-                      newProducts[index].price = parseFloat(e.target.value);
-                      setProducts(newProducts);
-                    }}
-                    placeholder="Harga"
-                  />
-                </td>
+                <td>{product.price}</td>
                 <td>{(product.price * product.qty).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        <button onClick={handleAddProduct}>Add Product</button>
 
         {/* Total Section */}
         <div className="total-section">
-          <h2>Total: {totalAmount}</h2>
+          <h2>Total: {(products.reduce((acc, product) => acc + (product.price * product.qty), 0)).toFixed(2)}</h2>
         </div>
       </div>
 
