@@ -1,52 +1,86 @@
+/* Container utama untuk kasir */
 .kasir-container {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px;
+  display: flex; /* Mengatur layout flex untuk elemen di dalamnya */
+  justify-content: space-between; /* Membuat jarak antara bagian kiri dan kanan */
+  margin: 20px; /* Jarak di sekitar kontainer */
+  font-family: Arial, sans-serif; /* Mengubah font untuk semua teks dalam kontainer */
 }
 
-.left-section {
-  flex: 2;
-  margin-right: 20px;
+/* Bagian ringkasan pesanan */
+.order-summary-section {
+  flex: 2; /* Membuat bagian ini lebih besar daripada bagian lainnya */
+  margin-right: 20px; /* Jarak di sebelah kanan */
+  background-color: #f9f9f9; /* Latar belakang untuk section kiri */
+  padding: 15px; /* Menambahkan padding di dalam section */
+  border-radius: 8px; /* Membulatkan sudut section */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bayangan halus untuk efek kedalaman */
 }
 
-.right-section {
-  flex: 1;
-}
-
+/* Tabel produk */
 .products-table {
-  width: 100%;
-  border-collapse: collapse;
+  width: 100%; /* Mengatur lebar tabel menjadi 100% dari kontainer */
+  border-collapse: collapse; /* Menggabungkan border untuk tampilan bersih */
 }
 
+/* Gaya untuk header dan sel tabel */
 .products-table th, .products-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
+  border: 1px solid #ddd; /* Border untuk setiap sel tabel */
+  padding: 10px; /* Menambah padding untuk sel tabel */
+  text-align: center; /* Menjajarkan teks di tengah sel */
 }
 
+/* Gaya khusus untuk header tabel */
+.products-table th {
+  background-color: #007bff; /* Warna latar belakang header */
+  color: white; /* Warna teks header */
+}
+
+/* Efek hover pada baris tabel */
+.products-table tr:hover {
+  background-color: #f1f1f1; /* Warna latar belakang saat hover */
+}
+
+/* Bagian total di bawah tabel */
 .total-section {
-  margin-top: 20px;
-  font-size: 24px;
-  font-weight: bold;
-  text-align: right;
+  margin-top: 20px; /* Jarak atas dari elemen sebelumnya */
+  font-size: 24px; /* Ukuran font untuk total */
+  font-weight: bold; /* Menebalkan teks total */
+  text-align: right; /* Menjajarkan teks total ke kanan */
 }
 
-.customer-info {
-  margin-top: 20px;
+/* Bagian untuk pencarian produk */
+.search-product {
+  margin-bottom: 20px; /* Jarak bawah untuk memisahkan pencarian dari tabel */
+  display: flex; /* Mengatur layout flex untuk input dan tombol */
+  align-items: center; /* Menjaga agar semua elemen sejajar secara vertikal */
+  gap: 10px; /* Jarak antara elemen dalam pencarian */
+  width: 100%; /* Memastikan search-product lebar penuh */
 }
 
-.customer-info input, .customer-info textarea {
-  width: 100%;
-  margin: 5px 0;
-  padding: 10px;
+/* Gaya untuk input pencarian */
+.search-product input {
+  padding: 8px; /* Padding untuk input pencarian */
+  border: 1px solid #ccc; /* Border untuk input */
+  border-radius: 5px; /* Membulatkan sudut input */
+  flex-grow: 1; /* Mengatur agar input tumbuh sesuai lebar tabel */
+  box-sizing: border-box; /* Menghitung padding dalam lebar */
+  min-width: 150px; /* Memberikan lebar minimum agar input tidak terlalu kecil */
 }
 
-.payment-method {
-  margin-top: 20px;
+/* Gaya untuk tombol tambah barang */
+.search-product button {
+  padding: 10px 15px; /* Padding untuk tombol */
+  font-size: 16px; /* Ukuran font untuk teks tombol */
+  border: none; /* Menghilangkan border default */
+  border-radius: 5px; /* Membulatkan sudut tombol */
+  background-color: #007bff; /* Warna latar belakang tombol */
+  color: white; /* Warna teks tombol */
+  cursor: pointer; /* Mengubah kursor saat hover */
+  flex-shrink: 0; /* Mencegah tombol menyusut saat input meluas */
 }
 
-button {
-  margin-top: 10px;
-  padding: 10px 15px;
-  font-size: 16px;
+/* Gaya untuk produk yang dicari */
+.searched-product {
+  margin-top: 10px; /* Jarak atas untuk pemisahan nama produk yang dicari */
+  font-weight: bold; /* Menebalkan teks nama produk */
 }

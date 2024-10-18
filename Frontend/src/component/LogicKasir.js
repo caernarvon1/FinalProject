@@ -2,11 +2,9 @@ import { useState } from 'react';
 
 const useKasirLogic = () => {
   const [products, setProducts] = useState([]); // Menghapus default produk kosong
-  const [customer, setCustomer] = useState('');
-  const [notes, setNotes] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('cash');
-  const [paymentAmount, setPaymentAmount] = useState(0); // Menambahkan state untuk paymentAmount
-  const [change, setChange] = useState(0);
+  const [searchCode, setSearchCode] = useState(''); // State untuk menyimpan kode barang yang dicari
+  const [loading, setLoading] = useState(false); // Loading state saat mencari produk
+  const [errorMessage, setErrorMessage] = useState(''); // State untuk pesan error
 
   const handleAddProduct = () => {
     setProducts([...products, { id: products.length + 1, name: '', qty: 0, price: 0, discount: 0 }]);
@@ -31,14 +29,13 @@ const useKasirLogic = () => {
       code: product.kode_produk,
       name: product.nama_produk,
       qty: 1, // Default quantity
-      price: product.harga,
+      price: product.harga_jual.toLocaleString('id-ID', { minimumFractionDigits: 0 }),
       discount: 0 
     }]);
   };
 
   return {
-    products, setProducts, customer, setCustomer, notes, setNotes,
-    paymentMethod, setPaymentMethod, paymentAmount, setPaymentAmount, change, setChange,
+    products, setProducts, searchCode, setSearchCode, loading, setLoading, errorMessage, setErrorMessage,
     handleAddProduct, handleProductChange, calculateTotal, addProductFromSearch,
   };
 };
