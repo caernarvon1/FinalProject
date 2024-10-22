@@ -1,7 +1,7 @@
 /* Container utama untuk kasir */
 .kasir-container {
   display: flex; /* Mengatur layout flex untuk elemen di dalamnya */
-  justify-content: space-between; /* Membuat jarak antara bagian kiri dan kanan */
+  flex-direction: column; /* Mengatur elemen agar tampil dalam satu kolom */
   margin: 20px; /* Jarak di sekitar kontainer */
   font-family: Arial, sans-serif; /* Mengubah font untuk semua teks dalam kontainer */
 }
