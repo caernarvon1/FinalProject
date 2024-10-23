@@ -84,3 +84,28 @@
   margin-top: 10px; /* Jarak atas untuk pemisahan nama produk yang dicari */
   font-weight: bold; /* Menebalkan teks nama produk */
 }
+
+/* CSS untuk pop-up Supervisor */
+/* Gaya untuk pop-up */
+.popup {
+  position: fixed; /* Memastikan pop-up tetap di tempat */
+  top: 50%; /* Mengatur posisi vertikal ke tengah */
+  left: 50%; /* Mengatur posisi horizontal ke tengah */
+  transform: translate(-50%, -50%); /* Menggeser pop-up untuk sejajar tengah */
+  background-color: white; /* Warna latar belakang pop-up */
+  border-radius: 8px; /* Membulatkan sudut pop-up */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bayangan untuk pop-up */
+  padding: 20px; /* Padding di dalam pop-up */
+  z-index: 1000; /* Memastikan pop-up berada di atas elemen lainnya */
+}
+
+/* Gaya untuk tombol tutup di pop-up */
+.popup-close {
+  position: absolute; /* Memposisikan tombol tutup */
+  top: 10px; /* Jarak dari atas */
+  right: 10px; /* Jarak dari kanan */
+  background: none; /* Menghilangkan background */
+  border: none; /* Menghilangkan border */
+  cursor: pointer; /* Mengubah kursor saat hover */
+  font-size: 20px; /* Ukuran font untuk tombol tutup */
+}

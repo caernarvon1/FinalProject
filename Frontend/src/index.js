@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client'; // Impor createRoot
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import App from './App'; // Impor komponen utama
 
 // Mengambil elemen root dari DOM
@@ -8,7 +10,7 @@ const root = ReactDOM.createRoot(rootElement);
 
 // Merender komponen App ke dalam elemen root
 root.render(
-//  <React.StrictMode>
+//<React.StrictMode>
     <App />
-//  </React.StrictMode>
+//</React.StrictMode>
 );
