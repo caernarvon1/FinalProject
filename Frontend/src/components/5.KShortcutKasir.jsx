@@ -1,7 +1,6 @@
-// components/5.KShortcutKasir.jsx
 import React, { useEffect, useCallback } from 'react';
 
-const KeyboardShortcuts = ({ onSearch, onNewTransaction, onOpenSupervisor }) => {
+const KeyboardShortcuts = ({ onSearch, onNewTransaction, toggleSupervisorModal }) => {
   // Mendefinisikan fungsi handleKeyDown dengan useCallback
   const handleKeyDown = useCallback((e) => {
     console.log('Key pressed:', e.key); // Debugging untuk memeriksa tombol yang ditekan
@@ -13,9 +12,9 @@ const KeyboardShortcuts = ({ onSearch, onNewTransaction, onOpenSupervisor }) => 
       onNewTransaction();
     } else if (e.key === 'F3') {
       e.preventDefault();
-      onOpenSupervisor(); // Menangani F3
+      toggleSupervisorModal(); // Menangani F3 untuk toggle
     }
-  }, [onSearch, onNewTransaction, onOpenSupervisor]); // Menjadikan fungsi sebagai dependensi
+  }, [onSearch, onNewTransaction, toggleSupervisorModal]); // Mengganti onOpenSupervisor dengan toggleSupervisorModal
 
   useEffect(() => {
     // Menambahkan event listener untuk keydown

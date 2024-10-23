@@ -63,6 +63,7 @@ const Kasir = () => {
   };
 
   const handleCloseSupervisorModal = () => {
+    console.log('Supervisor closed'); // Debug log
     setShowSupervisorModal(false); // Tutup modal Supervisor
   };
 
@@ -78,7 +79,7 @@ const Kasir = () => {
       <KeyboardShortcuts 
         onSearch={handleSearchProduct} 
         onNewTransaction={handleNewTransaction} 
-        onOpenSupervisor={handleOpenSupervisor} // Kirimkan fungsi ini
+        toggleSupervisorModal={showSupervisorModal ? handleCloseSupervisorModal : handleOpenSupervisor} // Kirimkan fungsi toggle
       />
 
       <div className="kasir-container" style={{ marginTop: '0' }}>
