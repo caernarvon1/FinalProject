@@ -1,17 +1,14 @@
+// 1.Kasir.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
-
 import useKasirLogic from './components/0.LogicKasir'; 
 import HeaderKasir from './components/1.HeaderKasir';
 import FooterKasir from './components/3.FooterKasir';
 import PaySectionKasir from './components/2.PaySectionKasir';
-
+import KeyboardShortcuts from './components/5.KShortcutKasir';
 import './1.Kasir.css'; 
 
-import { useNavigate } from 'react-router-dom';
-
 const Kasir = () => {
-  const navigate = useNavigate();
   const { products, setProducts, addProductFromSearch } = useKasirLogic();
   const [searchCode, setSearchCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -54,6 +51,11 @@ const Kasir = () => {
     window.open('/receipt', '_blank');
   };
 
+  const handleNewTransaction = () => {
+    setProducts([]); // Menghapus semua produk
+    setSearchCode(''); // Mengosongkan input pencarian
+  };
+
   const totalAmount = products.reduce((acc, product) => acc + (product.harga_jual * product.qty), 0)
     .toLocaleString('id-ID', { style: 'decimal' })
     .replace(',', '.')
@@ -62,10 +64,13 @@ const Kasir = () => {
 
   return (
     <>
-      <HeaderKasir />
+      <HeaderKasir onNewTransaction={handleNewTransaction} />
+      <KeyboardShortcuts 
+        onSearch={handleSearchProduct} 
+        onNewTransaction={handleNewTransaction} 
+      />
 
       <div className="kasir-container" style={{ marginTop: '0' }}>
-
         <div className="order-summary-section">
           <h1>Ordered Products</h1>
 
