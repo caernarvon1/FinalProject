@@ -1,4 +1,3 @@
-// 1.Kasir.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import useKasirLogic from './components/0.LogicKasir'; 
@@ -6,6 +5,7 @@ import HeaderKasir from './components/1.HeaderKasir';
 import FooterKasir from './components/3.FooterKasir';
 import PaySectionKasir from './components/2.PaySectionKasir';
 import KeyboardShortcuts from './components/5.KShortcutKasir';
+import Supervisor from './components/4.Supervisor'; // Pastikan Anda mengimpor komponen Supervisor
 import './1.Kasir.css'; 
 
 const Kasir = () => {
@@ -13,6 +13,7 @@ const Kasir = () => {
   const [searchCode, setSearchCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showSupervisorModal, setShowSupervisorModal] = useState(false); // State untuk modal Supervisor
 
   const handleSearchProduct = async () => {
     if (!searchCode) {
@@ -56,6 +57,15 @@ const Kasir = () => {
     setSearchCode(''); // Mengosongkan input pencarian
   };
 
+  const handleOpenSupervisor = () => {
+    console.log('Supervisor opened'); // Debug log
+    setShowSupervisorModal(true); // Buka modal Supervisor
+  };
+
+  const handleCloseSupervisorModal = () => {
+    setShowSupervisorModal(false); // Tutup modal Supervisor
+  };
+
   const totalAmount = products.reduce((acc, product) => acc + (product.harga_jual * product.qty), 0)
     .toLocaleString('id-ID', { style: 'decimal' })
     .replace(',', '.')
@@ -68,6 +78,7 @@ const Kasir = () => {
       <KeyboardShortcuts 
         onSearch={handleSearchProduct} 
         onNewTransaction={handleNewTransaction} 
+        onOpenSupervisor={handleOpenSupervisor} // Kirimkan fungsi ini
       />
 
       <div className="kasir-container" style={{ marginTop: '0' }}>
@@ -125,6 +136,12 @@ const Kasir = () => {
 
         <FooterKasir />
       </div>
+
+      {/* Modal Supervisor */}
+      <Supervisor 
+        showModal={showSupervisorModal} 
+        handleClose={handleCloseSupervisorModal} 
+      />
     </>
   );
 };
