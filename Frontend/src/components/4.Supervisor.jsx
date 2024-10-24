@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const Supervisor = ({ showModal, handleClose }) => {
+const Supervisor = ({ showModal, handleClose, products = [] }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,6 +22,31 @@ const Supervisor = ({ showModal, handleClose }) => {
     }
   };
 
+  const handleQtyChange = (index, newQty) => {
+    if (newQty >= 0) {
+      products[index].qty = newQty; // Update Qty langsung pada array
+    }
+  };
+
+  const handleDecrement = (index) => {
+    if (products[index].qty > 0) {
+      products[index].qty -= 1; // Decrement Qty langsung pada array
+    }
+  };
+
+  const handleSave = () => {
+    // Simpan perubahan Qty jika diperlukan
+    console.log('Data disimpan:', products);
+  };
+
+  const handleLogout = () => {
+    // Mengatur kembali state untuk logout
+    setIsAuthenticated(false);
+    setUsername('');
+    setPassword('');
+    handleClose(); // Menutup modal
+  };
+
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -31,7 +56,48 @@ const Supervisor = ({ showModal, handleClose }) => {
         {isAuthenticated ? (
           <div>
             <h2>Anda telah masuk sebagai Supervisor</h2>
-            {/* Tambahkan fungsionalitas modifikasi barang di sini */}
+            <h4>Daftar Barang:</h4>
+            {products && products.length > 0 ? (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Kode Item</th>
+                    <th>Nama Item</th>
+                    <th>Qty</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((item, index) => (
+                    <tr key={item.id}>
+                      <td>{item.id}</td>
+                      <td>{item.name}</td>
+                      <td>
+                        <input
+                          type="number"
+                          value={item.qty}
+                          onChange={(e) => handleQtyChange(index, parseInt(e.target.value))}
+                          style={{ width: '60px', marginLeft: '10px' }}
+                        />
+                      </td>
+                      <td>
+                        <Button variant="danger" onClick={() => handleDecrement(index)}>
+                          Decrement
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>Tidak ada barang yang tersedia.</p>
+            )}
+            <Button variant="primary" onClick={handleSave} style={{ marginTop: '10px' }}>
+              Simpan
+            </Button>
+            <Button variant="secondary" onClick={handleLogout} style={{ marginLeft: '10px' }}>
+              Log Out
+            </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>

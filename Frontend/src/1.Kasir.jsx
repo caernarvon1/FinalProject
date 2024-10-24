@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import useKasirLogic from './components/0.LogicKasir'; 
 import HeaderKasir from './components/1.HeaderKasir';
@@ -73,6 +73,11 @@ const Kasir = () => {
     .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
     .replace(/^/, 'Rp ');
 
+  // Log produk setelah diubah
+  useEffect(() => {
+    console.log(products); // Cek produk setelah ditambahkan
+  }, [products]); // Menjadikan products sebagai dependensi
+
   return (
     <>
       <HeaderKasir onNewTransaction={handleNewTransaction} />
@@ -142,6 +147,7 @@ const Kasir = () => {
       <Supervisor 
         showModal={showSupervisorModal} 
         handleClose={handleCloseSupervisorModal} 
+        products={products} // Menyediakan daftar produk ke Supervisor
       />
     </>
   );
