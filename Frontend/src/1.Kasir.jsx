@@ -5,7 +5,7 @@ import HeaderKasir from './components/1.HeaderKasir';
 import FooterKasir from './components/3.FooterKasir';
 import PaySectionKasir from './components/2.PaySectionKasir';
 import KeyboardShortcuts from './components/5.KShortcutKasir';
-import Supervisor from './components/4.Supervisor'; // Pastikan Anda mengimpor komponen Supervisor
+import ModalSpvKasir from './components/4.ModalSpvKasir'; // Ganti nama import di sini
 import './1.Kasir.css'; 
 
 const Kasir = () => {
@@ -144,7 +144,7 @@ const Kasir = () => {
       </div>
 
       {/* Modal Supervisor */}
-      <Supervisor 
+      <ModalSpvKasir 
         showModal={showSupervisorModal} 
         handleClose={handleCloseSupervisorModal} 
         products={products} // Menyediakan daftar produk ke Supervisor

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const Supervisor = ({ showModal, handleClose, products = [] }) => {
+const ModalSpvKasir = ({ showModal, handleClose, products = [] }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -135,4 +135,4 @@ const Supervisor = ({ showModal, handleClose, products = [] }) => {
   );
 };
 
-export default Supervisor;
+export default ModalSpvKasir;

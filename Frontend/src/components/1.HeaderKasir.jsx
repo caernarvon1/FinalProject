@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Clock from './clock';
-import Supervisor from './4.Supervisor'; // Impor Supervisor dengan modal
+import Supervisor from './4.ModalSpvKasir'; // Impor Supervisor dengan modal
 
 function HeaderKasir({ onNewTransaction }) {
   const location = useLocation(); // Mendapatkan lokasi saat ini
