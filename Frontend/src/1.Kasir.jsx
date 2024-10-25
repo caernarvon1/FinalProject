@@ -5,7 +5,7 @@ import HeaderKasir from './components/1.HeaderKasir';
 import FooterKasir from './components/3.FooterKasir';
 import PaySectionKasir from './components/2.PaySectionKasir';
 import KeyboardShortcuts from './components/5.KShortcutKasir';
-import ModalSpvKasir from './components/4.ModalSpvKasir'; // Ganti nama import di sini
+import ModalSpvKasir from './components/4.ModalSpvKasir'; // Import Modal Supervisor
 import './1.Kasir.css'; 
 
 const Kasir = () => {
@@ -14,6 +14,23 @@ const Kasir = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showSupervisorModal, setShowSupervisorModal] = useState(false); // State untuk modal Supervisor
+
+  // Mengambil produk dari localStorage saat halaman dimuat
+  useEffect(() => {
+    const storedProducts = localStorage.getItem('products');
+    if (storedProducts) {
+      setProducts(JSON.parse(storedProducts));
+    }
+  }, [setProducts]);
+
+  // Menyimpan produk ke localStorage setiap kali array products berubah
+  useEffect(() => {
+    if (products.length > 0) {
+      localStorage.setItem('products', JSON.stringify(products));
+    } else {
+      localStorage.removeItem('products'); // Hapus dari localStorage jika tidak ada produk
+    }
+  }, [products]);
 
   const handleSearchProduct = async () => {
     if (!searchCode) {
@@ -54,16 +71,16 @@ const Kasir = () => {
 
   const handleNewTransaction = () => {
     setProducts([]); // Menghapus semua produk
+    localStorage.removeItem('products'); // Hapus dari localStorage
     setSearchCode(''); // Mengosongkan input pencarian
   };
 
   const handleOpenSupervisor = () => {
-    console.log('Supervisor opened'); // Debug log
+    console.log('Opening Supervisor Modal with products:', products);
     setShowSupervisorModal(true); // Buka modal Supervisor
   };
 
   const handleCloseSupervisorModal = () => {
-    console.log('Supervisor closed'); // Debug log
     setShowSupervisorModal(false); // Tutup modal Supervisor
   };
 
@@ -72,11 +89,6 @@ const Kasir = () => {
     .replace(',', '.')
     .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
     .replace(/^/, 'Rp ');
-
-  // Log produk setelah diubah
-  useEffect(() => {
-    console.log(products); // Cek produk setelah ditambahkan
-  }, [products]); // Menjadikan products sebagai dependensi
 
   return (
     <>
@@ -148,6 +160,7 @@ const Kasir = () => {
         showModal={showSupervisorModal} 
         handleClose={handleCloseSupervisorModal} 
         products={products} // Menyediakan daftar produk ke Supervisor
+        setProducts={setProducts} // Mengirimkan setProducts untuk memperbarui qty
       />
     </>
   );

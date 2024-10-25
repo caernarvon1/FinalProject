@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const ModalSpvKasir = ({ showModal, handleClose, products = [] }) => {
+const ModalSpvKasir = ({ showModal, handleClose, products = [], setProducts }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Log data produk yang diterima
+  console.log('Products in Supervisor Modal:', products);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -24,19 +27,20 @@ const ModalSpvKasir = ({ showModal, handleClose, products = [] }) => {
 
   const handleQtyChange = (index, newQty) => {
     if (newQty >= 0) {
-      products[index].qty = newQty; // Update Qty langsung pada array
+      const updatedProducts = [...products];
+      updatedProducts[index].qty = newQty; // Update Qty langsung pada array
+      setProducts(updatedProducts);
+      localStorage.setItem('products', JSON.stringify(updatedProducts)); // Simpan ke localStorage
     }
   };
 
   const handleDecrement = (index) => {
     if (products[index].qty > 0) {
-      products[index].qty -= 1; // Decrement Qty langsung pada array
+      const updatedProducts = [...products];
+      updatedProducts[index].qty -= 1; // Decrement Qty langsung pada array
+      setProducts(updatedProducts);
+      localStorage.setItem('products', JSON.stringify(updatedProducts)); // Simpan ke localStorage
     }
-  };
-
-  const handleSave = () => {
-    // Simpan perubahan Qty jika diperlukan
-    console.log('Data disimpan:', products);
   };
 
   const handleLogout = () => {
@@ -70,8 +74,8 @@ const ModalSpvKasir = ({ showModal, handleClose, products = [] }) => {
                 <tbody>
                   {products.map((item, index) => (
                     <tr key={item.id}>
-                      <td>{item.id}</td>
-                      <td>{item.name}</td>
+                      <td>{item.kode_produk}</td>
+                      <td>{item.nama_produk}</td>
                       <td>
                         <input
                           type="number"
@@ -92,9 +96,6 @@ const ModalSpvKasir = ({ showModal, handleClose, products = [] }) => {
             ) : (
               <p>Tidak ada barang yang tersedia.</p>
             )}
-            <Button variant="primary" onClick={handleSave} style={{ marginTop: '10px' }}>
-              Simpan
-            </Button>
             <Button variant="secondary" onClick={handleLogout} style={{ marginLeft: '10px' }}>
               Log Out
             </Button>
