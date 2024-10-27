@@ -2,14 +2,12 @@
 .kasir-container {
   display: flex; /* 1.1 Mengatur layout flex untuk elemen di dalamnya */
   flex-direction: column; /* 1.2 Mengatur elemen agar tampil dalam satu kolom */
-  margin: 20px; /* 1.3 Jarak di sekitar kontainer */
   font-family: Arial, sans-serif; /* 1.4 Mengubah font untuk semua teks dalam kontainer */
 }
 
 /* 2. Bagian ringkasan pesanan */
 .order-summary-section {
   flex: 2; /* 2.1 Membuat bagian ini lebih besar daripada bagian lainnya */
-  margin-right: 20px; /* 2.2 Jarak di sebelah kanan */
   background-color: #f9f9f9; /* 2.3 Latar belakang untuk section kiri */
   padding: 15px; /* 2.4 Menambahkan padding di dalam section */
   border-radius: 8px; /* 2.5 Membulatkan sudut section */
@@ -22,6 +20,14 @@
   border-collapse: collapse; /* 3.2 Menggabungkan border untuk tampilan bersih */
 }
 
+.products-table th {
+  position: sticky; /* 3.3 Membuat header tabel tetap di posisi atas saat scrolling */
+  top: 0; /* 3.4 Menetapkan posisi top agar header tetap di atas */
+  background-color: #007bff; /* 3.5 Warna background header */
+  color: white; /* 3.6 Warna teks pada header */
+  z-index: 1; /* 3.7 Menjaga header di atas konten tabel */
+}
+
 /* 4. Gaya untuk header dan sel tabel */
 .products-table th, .products-table td {
   border: 1px solid #ddd; /* 4.1 Border untuk setiap sel tabel */
@@ -29,74 +35,82 @@
   text-align: center; /* 4.3 Menjajarkan teks di tengah sel */
 }
 
-/* 5. Gaya khusus untuk header tabel */
-.products-table th {
-  background-color: #007bff; /* 5.1 Warna latar belakang header */
-  color: white; /* 5.2 Warna teks header */
-}
-
-/* 6. Efek hover pada baris tabel */
+/* 5. Efek hover pada baris tabel */
 .products-table tr:hover {
-  background-color: #f1f1f1; /* 6.1 Warna latar belakang saat hover */
+  background-color: #f1f1f1; /* 5.1 Warna latar belakang saat hover */
 }
 
-/* 7. Bagian total di bawah tabel */
+/* Membuat header tabel menjadi sticky saat scrolling */
+.products-container {
+  max-height: 271px;
+  overflow-y: auto;
+}
+
+/* 6. Bagian total di bawah tabel */
 .total-section {
-  margin-top: 20px; /* 7.1 Jarak atas dari elemen sebelumnya */
-  font-size: 24px; /* 7.2 Ukuran font untuk total */
-  font-weight: bold; /* 7.3 Menebalkan teks total */
-  text-align: right; /* 7.4 Menjajarkan teks total ke kanan */
+  margin-top: 20px; /* 6.1 Jarak atas dari elemen sebelumnya */
+  font-size: 24px; /* 6.2 Ukuran font untuk total */
+  font-weight: bold; /* 6.3 Menebalkan teks total */
+  text-align: right; /* 6.4 Menjajarkan teks total ke kanan */
 }
 
-/* 8. Bagian untuk pencarian produk */
+/* 7. Bagian untuk pencarian produk */
 .search-product {
-  margin-bottom: 20px; /* 8.1 Jarak bawah untuk memisahkan pencarian dari tabel */
-  display: flex; /* 8.2 Mengatur layout flex untuk input dan tombol */
-  align-items: center; /* 8.3 Menjaga agar semua elemen sejajar secara vertikal */
-  gap: 10px; /* 8.4 Jarak antara elemen dalam pencarian */
-  width: 100%; /* 8.5 Memastikan search-product lebar penuh */
+  margin-bottom: 20px; /* 7.1 Jarak bawah untuk memisahkan pencarian dari tabel */
+  display: flex; /* 7.2 Mengatur layout flex untuk input dan tombol */
+  align-items: center; /* 7.3 Menjaga agar semua elemen sejajar secara vertikal */
+  gap: 10px; /* 7.4 Jarak antara elemen dalam pencarian */
+  width: 100%; /* 7.5 Memastikan search-product lebar penuh */
 }
 
-/* 9. Gaya untuk input pencarian */
+/* 8. Gaya untuk input pencarian */
 .search-product input {
-  padding: 8px; /* 9.1 Padding untuk input pencarian */
-  border: 1px solid #ccc; /* 9.2 Border untuk input */
-  border-radius: 5px; /* 9.3 Membulatkan sudut input */
-  flex-grow: 1; /* 9.4 Mengatur agar input tumbuh sesuai lebar tabel */
-  box-sizing: border-box; /* 9.5 Menghitung padding dalam lebar */
-  min-width: 150px; /* 9.6 Memberikan lebar minimum agar input tidak terlalu kecil */
+  padding: 8px; /* 8.1 Padding untuk input pencarian */
+  border: 1px solid #ccc; /* 8.2 Border untuk input */
+  border-radius: 5px; /* 8.3 Membulatkan sudut input */
+  flex-grow: 1; /* 8.4 Mengatur agar input tumbuh sesuai lebar tabel */
+  box-sizing: border-box; /* 8.5 Menghitung padding dalam lebar */
+  min-width: 150px; /* 8.6 Memberikan lebar minimum agar input tidak terlalu kecil */
 }
 
-/* 10. Gaya untuk tombol tambah barang */
+/* 9. Gaya untuk tombol tambah barang */
 .search-product button {
-  padding: 10px 15px; /* 10.1 Padding untuk tombol */
-  font-size: 16px; /* 10.2 Ukuran font untuk teks tombol */
-  border: none; /* 10.3 Menghilangkan border default */
-  border-radius: 5px; /* 10.4 Membulatkan sudut tombol */
-  background-color: #007bff; /* 10.5 Warna latar belakang tombol */
-  color: white; /* 10.6 Warna teks tombol */
-  cursor: pointer; /* 10.7 Mengubah kursor saat hover */
-  flex-shrink: 0; /* 10.8 Mencegah tombol menyusut saat input meluas */
+  padding: 10px 15px; /* 9.1 Padding untuk tombol */
+  font-size: 16px; /* 9.2 Ukuran font untuk teks tombol */
+  border: none; /* 9.3 Menghilangkan border default */
+  border-radius: 5px; /* 9.4 Membulatkan sudut tombol */
+  background-color: #007bff; /* 9.5 Warna latar belakang tombol */
+  color: white; /* 9.6 Warna teks tombol */
+  cursor: pointer; /* 9.7 Mengubah kursor saat hover */
+  flex-shrink: 0; /* 9.8 Mencegah tombol menyusut saat input meluas */
 }
 
-/* 11. Gaya untuk produk yang dicari */
+/* 10. Gaya untuk produk yang dicari */
 .searched-product {
-  margin-top: 10px; /* 11.1 Jarak atas untuk pemisahan nama produk yang dicari */
-  font-weight: bold; /* 11.2 Menebalkan teks nama produk */
+  margin-top: 10px; /* 10.1 Jarak atas untuk pemisahan nama produk yang dicari */
+  font-weight: bold; /* 10.2 Menebalkan teks nama produk */
+}
+
+/* 11. Custom styling untuk footer */
+.custom-footer {
+  height: 10px; /* 11.1 Atur tinggi sesuai keinginan, misal 60px */
+  background-color: #f8f9fa; /* 11.2 Atur warna background jika diinginkan */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 12. CSS untuk pop-up Supervisor */
-/* 12.1 Gaya untuk pop-up */
 .popup {
-  position: fixed; /* 12.2 Memastikan pop-up tetap di tempat */
-  top: 50%; /* 12.3 Mengatur posisi vertikal ke tengah */
-  left: 50%; /* 12.4 Mengatur posisi horizontal ke tengah */
-  transform: translate(-50%, -50%); /* 12.5 Menggeser pop-up untuk sejajar tengah */
-  background-color: white; /* 12.6 Warna latar belakang pop-up */
-  border-radius: 8px; /* 12.7 Membulatkan sudut pop-up */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 12.8 Bayangan untuk pop-up */
-  padding: 20px; /* 12.9 Padding di dalam pop-up */
-  z-index: 1000; /* 12.10 Memastikan pop-up berada di atas elemen lainnya */
+  position: fixed; /* 12.1 Memastikan pop-up tetap di tempat */
+  top: 50%; /* 12.2 Mengatur posisi vertikal ke tengah */
+  left: 50%; /* 12.3 Mengatur posisi horizontal ke tengah */
+  transform: translate(-50%, -50%); /* 12.4 Menggeser pop-up untuk sejajar tengah */
+  background-color: white; /* 12.5 Warna latar belakang pop-up */
+  border-radius: 8px; /* 12.6 Membulatkan sudut pop-up */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 12.7 Bayangan untuk pop-up */
+  padding: 20px; /* 12.8 Padding di dalam pop-up */
+  z-index: 1000; /* 12.9 Memastikan pop-up berada di atas elemen lainnya */
 }
 
 /* 13. Gaya untuk tombol tutup di pop-up */

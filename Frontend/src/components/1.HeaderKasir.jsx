@@ -38,7 +38,7 @@ function HeaderKasir({ onNewTransaction }) {
               <button 
                 className="btn btn-light"
                 onClick={onNewTransaction} 
-                title="Mulai Transaksi Baru"
+                title="'F2' New Transaction"
               >
                 <i className="fas fa-file-alt"></i>
               </button>
@@ -48,7 +48,7 @@ function HeaderKasir({ onNewTransaction }) {
               <button 
                 className="btn btn-light" 
                 onClick={handleOpenSupervisorModal}
-                title="Supervisor"
+                title="'F3' Supervisor"
               >
                 <i className="fas fa-user-shield"></i> Supervisor
               </button>

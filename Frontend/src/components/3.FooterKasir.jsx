@@ -3,9 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Pastikan Bootstrap diimpor
 
 const FooterKasir = () => {
   return (
-    <footer className="bg-light text-center py-3">
+    <footer className="bg-light text-center py-1">
       <div className="container">
-        <p className="mb-0">© {new Date().getFullYear()} Aplikasi Kasir. All Rights Reserved.</p>
+      <p className="mb-0">Rahadian | Alpenfohn<sup>TM</sup></p>
       </div>
     </footer>
   );

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import useKasirLogic from './components/0.LogicKasir'; 
 import HeaderKasir from './components/1.HeaderKasir';
 import FooterKasir from './components/3.FooterKasir';
 import PaySectionKasir from './components/2.PaySectionKasir';
 import KeyboardShortcuts from './components/5.KShortcutKasir';
-import ModalSpvKasir from './components/4.ModalSpvKasir'; // Import Modal Supervisor
+import ModalSpvKasir from './components/4.ModalSpvKasir';
 import './1.Kasir.css'; 
 
 const Kasir = () => {
@@ -13,9 +13,12 @@ const Kasir = () => {
   const [searchCode, setSearchCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [showSupervisorModal, setShowSupervisorModal] = useState(false); // State untuk modal Supervisor
+  const [showSupervisorModal, setShowSupervisorModal] = useState(false);
+  const [foundProduct, setFoundProduct] = useState(null);
+  
+  // Membuat ref untuk tabel
+  const tableRef = useRef(null);
 
-  // Mengambil produk dari localStorage saat halaman dimuat
   useEffect(() => {
     const storedProducts = localStorage.getItem('products');
     if (storedProducts) {
@@ -23,18 +26,22 @@ const Kasir = () => {
     }
   }, [setProducts]);
 
-  // Menyimpan produk ke localStorage setiap kali array products berubah
   useEffect(() => {
     if (products.length > 0) {
       localStorage.setItem('products', JSON.stringify(products));
+      // Scroll ke bawah tabel ketika produk diperbarui
+      if (tableRef.current) {
+        tableRef.current.scrollTop = tableRef.current.scrollHeight;
+      }
     } else {
-      localStorage.removeItem('products'); // Hapus dari localStorage jika tidak ada produk
+      localStorage.removeItem('products');
     }
   }, [products]);
 
   const handleSearchProduct = async () => {
     if (!searchCode) {
-      setErrorMessage('Kode produk harus diisi');
+      setErrorMessage('Product code must not be empty');
+      setFoundProduct(null); 
       return;
     }
 
@@ -53,13 +60,16 @@ const Kasir = () => {
           nama_produk: product.nama_produk, 
           harga_jual: product.harga_jual 
         });
-        setSearchCode('');  // Kosongkan searchCode setelah menambahkan produk
+        setFoundProduct(product); 
+        setSearchCode('');
       } else {
-        setErrorMessage('Produk tidak ditemukan');
+        setErrorMessage('Product not found');
+        setFoundProduct(null); 
       }
     } catch (error) {
       console.error('Error fetching product:', error);
-      setErrorMessage('Terjadi kesalahan saat mencari produk');
+      setErrorMessage('An error occurred while searching for the product');
+      setFoundProduct(null); 
     } finally {
       setLoading(false);
     }
@@ -70,18 +80,19 @@ const Kasir = () => {
   };
 
   const handleNewTransaction = () => {
-    setProducts([]); // Menghapus semua produk
-    localStorage.removeItem('products'); // Hapus dari localStorage
-    setSearchCode(''); // Mengosongkan input pencarian
+    setProducts([]);
+    localStorage.removeItem('products');
+    setSearchCode('');
+    setFoundProduct(null); 
+    setErrorMessage(''); 
   };
 
   const handleOpenSupervisor = () => {
-    console.log('Opening Supervisor Modal with products:', products);
-    setShowSupervisorModal(true); // Buka modal Supervisor
+    setShowSupervisorModal(true);
   };
 
   const handleCloseSupervisorModal = () => {
-    setShowSupervisorModal(false); // Tutup modal Supervisor
+    setShowSupervisorModal(false);
   };
 
   const totalAmount = products.reduce((acc, product) => acc + (product.harga_jual * product.qty), 0)
@@ -96,7 +107,7 @@ const Kasir = () => {
       <KeyboardShortcuts 
         onSearch={handleSearchProduct} 
         onNewTransaction={handleNewTransaction} 
-        toggleSupervisorModal={showSupervisorModal ? handleCloseSupervisorModal : handleOpenSupervisor} // Kirimkan fungsi toggle
+        toggleSupervisorModal={showSupervisorModal ? handleCloseSupervisorModal : handleOpenSupervisor} 
       />
 
       <div className="kasir-container" style={{ marginTop: '0' }}>
@@ -108,39 +119,54 @@ const Kasir = () => {
               type="text"
               value={searchCode}
               onChange={(e) => setSearchCode(e.target.value)}
-              placeholder="Masukkan Kode Barang"
+              placeholder="Enter Product Code"
               disabled={loading}
             />
             <button onClick={handleSearchProduct} disabled={loading}>
-              {loading ? 'Mencari...' : 'Tambah Barang'}
+              {loading ? 'Searching...' : 'Add to Cart'}
             </button>
           </div>
           {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
 
-          <table className="products-table">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Kode Item</th>
-                <th>Nama Item</th>
-                <th>Qty</th>
-                <th>Harga</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{product.kode_produk}</td>
-                  <td>{product.nama_produk}</td>
-                  <td><span>{product.qty}</span></td>
-                  <td>{'Rp ' + (product.harga_jual).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
-                  <td>{'Rp ' + (product.harga_jual * product.qty).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
+          {foundProduct && (
+            <div className="found-product-info">
+              <p>Product Name: {foundProduct.nama_produk} | Price: Rp {foundProduct.harga_jual.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
+              </p>
+            </div>
+          )}
+
+          <div className="products-container" style={{ maxHeight: '272px', overflowY: 'auto' }} ref={tableRef}> 
+            <table className="products-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Code Item</th>
+                  <th>Item Name</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>Subtotal</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {products.map((product, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{product.kode_produk}</td>
+                    <td>{product.nama_produk}</td>
+                    <td><span>{product.qty}</span></td>
+                    <td>{'Rp ' + (product.harga_jual).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
+                    <td>{'Rp ' + (product.harga_jual * product.qty).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
+                  </tr>
+                ))}
+                {/* Menambahkan baris kosong hingga mencapai total 5 baris */}
+                {products.length < 5 && Array.from({ length: 5 - products.length }).map((_, index) => (
+                  <tr key={`empty-${index}`}>
+                    <td colSpan="6" style={{ textAlign: 'center', color: '#ccc' }}>- Empty -</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <div className="total-section">
             <h2>Total: {totalAmount}</h2>
@@ -155,12 +181,11 @@ const Kasir = () => {
         <FooterKasir />
       </div>
 
-      {/* Modal Supervisor */}
       <ModalSpvKasir 
         showModal={showSupervisorModal} 
         handleClose={handleCloseSupervisorModal} 
-        products={products} // Menyediakan daftar produk ke Supervisor
-        setProducts={setProducts} // Mengirimkan setProducts untuk memperbarui qty
+        products={products} 
+        setProducts={setProducts} 
       />
     </>
   );
