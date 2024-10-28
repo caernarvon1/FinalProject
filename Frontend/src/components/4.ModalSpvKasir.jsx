@@ -1,4 +1,4 @@
-// src/4.ModalSpvKasir.jsx
+// src/components/4.ModalSpvKasir.jsx
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,104 +6,80 @@ import { setProducts } from '../store/productsSlice';
 
 const ModalSpvKasir = ({ showModal, handleClose }) => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products); // Mengambil state produk dari Redux
+  const products = useSelector((state) => state.products);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Log data produk yang diterima
-  console.log('Products in Supervisor Modal:', products);
+  const lastProduct = products[products.length - 1];
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const correctUsername = 'supervisor'; // Username yang benar
-    const correctPassword = 'passwordSuper'; // Kata sandi yang benar
+    const correctUsername = 'supervisor';
+    const correctPassword = 'passwordSuper';
 
-    // Validasi username dan password
     if (username === correctUsername && password === correctPassword) {
       setIsAuthenticated(true);
       setErrorMessage('');
-      handleClose(); // Menutup modal saat login berhasil
     } else {
       setErrorMessage('Username atau kata sandi salah');
     }
   };
 
-  const handleQtyChange = (index, newQty) => {
-    if (newQty >= 0) {
+  const handleQtyChange = (newQty) => {
+    if (newQty >= 0 && lastProduct) {
       const updatedProducts = [...products];
-      updatedProducts[index].qty = newQty; // Update Qty langsung pada array
-      dispatch(setProducts(updatedProducts)); // Update state di Redux
-      localStorage.setItem('products', JSON.stringify(updatedProducts)); // Simpan ke localStorage
-    }
-  };
-
-  const handleDecrement = (index) => {
-    if (products[index].qty > 0) {
-      const updatedProducts = [...products];
-      updatedProducts[index].qty -= 1; // Decrement Qty langsung pada array
-      dispatch(setProducts(updatedProducts)); // Update state di Redux
-      localStorage.setItem('products', JSON.stringify(updatedProducts)); // Simpan ke localStorage
+      updatedProducts[updatedProducts.length - 1].qty = newQty;
+      dispatch(setProducts(updatedProducts));
+      localStorage.setItem('products', JSON.stringify(updatedProducts));
     }
   };
 
   const handleLogout = () => {
-    // Mengatur kembali state untuk logout
     setIsAuthenticated(false);
     setUsername('');
     setPassword('');
-    handleClose(); // Menutup modal
+    handleClose();
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
-      <Modal.Header closeButton>
+    <Modal show={isAuthenticated || showModal} onHide={handleClose} backdrop="static">
+      <Modal.Header closeButton={false}>
         <Modal.Title>Supervisor Login</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {isAuthenticated ? (
           <div>
-            <h2>Anda telah masuk sebagai Supervisor</h2>
-            <h4>Daftar Barang:</h4>
-            {products && products.length > 0 ? (
+            <h2>You are logged in as a Supervisor</h2>
+            <h4>Last item:</h4>
+            {lastProduct ? (
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Kode Item</th>
-                    <th>Nama Item</th>
+                    <th>Code Item</th>
+                    <th>Item Name</th>
                     <th>Qty</th>
-                    <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((item, index) => (
-                    <tr key={item.kode_produk}>
-                      <td>{item.kode_produk}</td>
-                      <td>{item.nama_produk}</td>
-                      <td>
-                        <input
-                          type="number"
-                          value={item.qty}
-                          onChange={(e) => handleQtyChange(index, parseInt(e.target.value))}
-                          style={{ width: '60px', marginLeft: '10px' }}
-                        />
-                      </td>
-                      <td>
-                        <Button variant="danger" onClick={() => handleDecrement(index)}>
-                          Decrement
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
+                  <tr>
+                    <td>{lastProduct.kode_produk}</td>
+                    <td>{lastProduct.nama_produk}</td>
+                    <td>
+                      <input
+                        type="number"
+                        value={lastProduct.qty}
+                        onChange={(e) => handleQtyChange(parseInt(e.target.value))}
+                        style={{ width: '60px', marginLeft: '10px' }}
+                      />
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             ) : (
-              <p>Tidak ada barang yang tersedia.</p>
+              <p>No items available.</p>
             )}
-            <Button variant="secondary" onClick={handleLogout} style={{ marginLeft: '10px' }}>
-              Log Out
-            </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
@@ -118,7 +94,7 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="password">Kata Sandi:</label>
+              <label htmlFor="password">Password:</label>
               <input
                 type="password"
                 className="form-control"
@@ -128,13 +104,13 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
               />
             </div>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-            <Button variant="primary" type="submit">Masuk</Button>
+            <Button variant="primary" type="submit">Log-in</Button>
           </form>
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Tutup
+        <Button variant="secondary" onClick={handleLogout}>
+          Log Out
         </Button>
       </Modal.Footer>
     </Modal>
