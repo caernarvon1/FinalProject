@@ -1,16 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Impor createRoot
+import ReactDOM from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import App from './App'; // Impor komponen utama
+import { Provider } from 'react-redux';
+import store from './store/store'; // Impor store Redux
+import App from './App';
 
 // Mengambil elemen root dari DOM
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
 
-// Merender komponen App ke dalam elemen root
+// Merender komponen App ke dalam elemen root, dengan Redux Provider
 root.render(
-//<React.StrictMode>
-    <App />
-//</React.StrictMode>
+    <Provider store={store}>
+        <App />
+    </Provider>
 );

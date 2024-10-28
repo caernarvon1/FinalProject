@@ -1,7 +1,11 @@
+//menggunakan useSelector untuk mengambil state produk dari store,  
+//dan useDispatch untuk mengirimkan aksi perubahan Qty produk. 
+//Pastikan file store memiliki slice produk yang menyediakan aksi dan state yang dibutuhkan.
+
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const ModalSpvKasir = ({ showModal, handleClose, products = [{"id":1,"kode_produk":1001,"nama_produk":"Gula Pasir","qty":3,"harga_jual":"10000","discount":0}], setProducts }) => {
+const ModalSpvKasir = ({ showModal, handleClose, products = [], setProducts }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);

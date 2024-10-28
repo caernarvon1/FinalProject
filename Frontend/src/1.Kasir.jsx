@@ -1,6 +1,8 @@
+// Kasir.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import useKasirLogic from './components/0.LogicKasir'; 
+import { useDispatch, useSelector } from 'react-redux';
+import { setProducts, addProduct, clearProducts } from './store/productsSlice'; // Sesuaikan path jika perlu
 import HeaderKasir from './components/1.HeaderKasir';
 import FooterKasir from './components/3.FooterKasir';
 import PaySectionKasir from './components/2.PaySectionKasir';
@@ -9,7 +11,8 @@ import ModalSpvKasir from './components/4.ModalSpvKasir';
 import './1.Kasir.css'; 
 
 const Kasir = () => {
-  const { products, setProducts, addProductFromSearch } = useKasirLogic();
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products);
   const [searchCode, setSearchCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -21,9 +24,9 @@ const Kasir = () => {
   useEffect(() => {
     const storedProducts = localStorage.getItem('products');
     if (storedProducts) {
-      setProducts(JSON.parse(storedProducts));
+      dispatch(setProducts(JSON.parse(storedProducts)));
     }
-  }, [setProducts]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (products.length > 0) {
@@ -53,11 +56,12 @@ const Kasir = () => {
       const product = response.data;
 
       if (product) {
-        addProductFromSearch({ 
+        dispatch(addProduct({ 
           kode_produk: product.kode_produk, 
           nama_produk: product.nama_produk, 
-          harga_jual: product.harga_jual 
-        });
+          harga_jual: product.harga_jual, 
+          qty: 1 // Atur qty default ke 1
+        }));
         setFoundProduct(product); 
         setSearchCode('');
       } else {
@@ -75,12 +79,12 @@ const Kasir = () => {
 
   const handlePayment = () => {
     alert('Pembayaran berhasil dilakukan.');
-    setProducts([]);
+    dispatch(clearProducts());
     localStorage.removeItem('products');
   };
 
   const handleNewTransaction = () => {
-    setProducts([]);
+    dispatch(clearProducts());
     localStorage.removeItem('products');
     setSearchCode('');
     setFoundProduct(null); 
@@ -167,26 +171,23 @@ const Kasir = () => {
             </table>
           </div>
 
-          <div className="flex-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '20px' }}>
-            <div>"untuk nanti saya isi sendiri111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"</div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-              <div style={{ marginBottom: '10px' }}><h2>Total: {totalAmount}</h2></div>
-              <PaySectionKasir 
-                onPay={handlePayment} 
-              />
+          <div className="flex-container" style={{ marginTop: '10px' }}>
+            <div style={{ flex: '1' }}>
+              <h5>Total Amount</h5>
+              <h3>{totalAmount}</h3>
+            </div>
+            <div style={{ flex: '1', display: 'flex', alignItems: 'flex-end' }}>
+              <PaySectionKasir onPayment={handlePayment} />
             </div>
           </div>
         </div>
-
-        <FooterKasir />
       </div>
 
-      <ModalSpvKasir 
-        showModal={showSupervisorModal} 
-        handleClose={handleCloseSupervisorModal} 
-        products={products} 
-        setProducts={setProducts} 
-      />
+      {showSupervisorModal && (
+        <ModalSpvKasir onClose={handleCloseSupervisorModal} />
+      )}
+
+      <FooterKasir />
     </>
   );
 };
