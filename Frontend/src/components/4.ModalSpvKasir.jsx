@@ -1,11 +1,12 @@
-//menggunakan useSelector untuk mengambil state produk dari store,  
-//dan useDispatch untuk mengirimkan aksi perubahan Qty produk. 
-//Pastikan file store memiliki slice produk yang menyediakan aksi dan state yang dibutuhkan.
-
+// src/4.ModalSpvKasir.jsx
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { setProducts } from '../store/productsSlice';
 
-const ModalSpvKasir = ({ showModal, handleClose, products = [], setProducts }) => {
+const ModalSpvKasir = ({ showModal, handleClose }) => {
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products); // Mengambil state produk dari Redux
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,7 +34,7 @@ const ModalSpvKasir = ({ showModal, handleClose, products = [], setProducts }) =
     if (newQty >= 0) {
       const updatedProducts = [...products];
       updatedProducts[index].qty = newQty; // Update Qty langsung pada array
-      setProducts(updatedProducts);
+      dispatch(setProducts(updatedProducts)); // Update state di Redux
       localStorage.setItem('products', JSON.stringify(updatedProducts)); // Simpan ke localStorage
     }
   };
@@ -42,7 +43,7 @@ const ModalSpvKasir = ({ showModal, handleClose, products = [], setProducts }) =
     if (products[index].qty > 0) {
       const updatedProducts = [...products];
       updatedProducts[index].qty -= 1; // Decrement Qty langsung pada array
-      setProducts(updatedProducts);
+      dispatch(setProducts(updatedProducts)); // Update state di Redux
       localStorage.setItem('products', JSON.stringify(updatedProducts)); // Simpan ke localStorage
     }
   };
@@ -77,7 +78,7 @@ const ModalSpvKasir = ({ showModal, handleClose, products = [], setProducts }) =
                 </thead>
                 <tbody>
                   {products.map((item, index) => (
-                    <tr key={item.id}>
+                    <tr key={item.kode_produk}>
                       <td>{item.kode_produk}</td>
                       <td>{item.nama_produk}</td>
                       <td>
