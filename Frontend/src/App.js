@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Kasir from './1.Kasir'; // Mengimpor komponen Kasir
-import Receipt from './components/4.Receipt'; // Mengimpor Receipt
 import ModalSpvKasir from './components/4.ModalSpvKasir'; // Pastikan nama dan jalur impor sudah benar
 
 const App = () => {
@@ -31,7 +30,6 @@ const App = () => {
             />
           } 
         /> {/* Halaman kasir */}
-        <Route path="/receipt" element={<Receipt products={products} />} /> {/* Halaman receipt */}
         <Route 
           path="/supervisor" 
           element={

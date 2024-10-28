@@ -16,7 +16,6 @@ const Kasir = () => {
   const [showSupervisorModal, setShowSupervisorModal] = useState(false);
   const [foundProduct, setFoundProduct] = useState(null);
   
-  // Membuat ref untuk tabel
   const tableRef = useRef(null);
 
   useEffect(() => {
@@ -29,7 +28,6 @@ const Kasir = () => {
   useEffect(() => {
     if (products.length > 0) {
       localStorage.setItem('products', JSON.stringify(products));
-      // Scroll ke bawah tabel ketika produk diperbarui
       if (tableRef.current) {
         tableRef.current.scrollTop = tableRef.current.scrollHeight;
       }
@@ -76,7 +74,9 @@ const Kasir = () => {
   };
 
   const handlePayment = () => {
-    window.open('/receipt', '_blank');
+    alert('Pembayaran berhasil dilakukan.');
+    setProducts([]);
+    localStorage.removeItem('products');
   };
 
   const handleNewTransaction = () => {
@@ -158,7 +158,6 @@ const Kasir = () => {
                     <td>{'Rp ' + (product.harga_jual * product.qty).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
                   </tr>
                 ))}
-                {/* Menambahkan baris kosong hingga mencapai total 5 baris */}
                 {products.length < 5 && Array.from({ length: 5 - products.length }).map((_, index) => (
                   <tr key={`empty-${index}`}>
                     <td colSpan="6" style={{ textAlign: 'center', color: '#ccc' }}>- Empty -</td>
@@ -168,14 +167,15 @@ const Kasir = () => {
             </table>
           </div>
 
-          <div className="total-section">
-            <h2>Total: {totalAmount}</h2>
+          <div className="flex-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '20px' }}>
+            <div>"untuk nanti saya isi sendiri111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"</div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+              <div style={{ marginBottom: '10px' }}><h2>Total: {totalAmount}</h2></div>
+              <PaySectionKasir 
+                onPay={handlePayment} 
+              />
+            </div>
           </div>
-
-          <PaySectionKasir 
-            infoMessage="--Information Box--" 
-            onPay={handlePayment} 
-          />
         </div>
 
         <FooterKasir />

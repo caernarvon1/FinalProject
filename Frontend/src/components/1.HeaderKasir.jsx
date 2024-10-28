@@ -10,6 +10,8 @@ function HeaderKasir({ onNewTransaction }) {
   const handleOpenSupervisorModal = () => setShowSupervisorModal(true);
   const handleCloseSupervisorModal = () => setShowSupervisorModal(false);
 
+  const produk = [{"id":1,"kode_produk":1001,"nama_produk":"Gula Pasir","qty":3,"harga_jual":"10000","discount":0}]
+
   return (
     <>
       <nav
@@ -61,9 +63,13 @@ function HeaderKasir({ onNewTransaction }) {
       </nav>
 
       {/* Modal Supervisor */}
+
+      
+
       <Supervisor 
         showModal={showSupervisorModal} 
         handleClose={handleCloseSupervisorModal} 
+        products={produk}
       />
     </>
   );
