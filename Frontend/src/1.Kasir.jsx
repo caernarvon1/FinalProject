@@ -105,91 +105,92 @@ const Kasir = () => {
     .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
     .replace(/^/, 'Rp ');
 
-  return (
-    <>
-      <HeaderKasir onNewTransaction={handleNewTransaction} />
-      <KeyboardShortcuts 
-        onSearch={handleSearchProduct} 
-        onNewTransaction={handleNewTransaction} 
-        toggleSupervisorModal={showSupervisorModal ? handleCloseSupervisorModal : handleOpenSupervisor} 
-      />
-
-      <div className="kasir-container" style={{ marginTop: '0' }}>
-        <div className="order-summary-section">
-          <h1>Ordered Products</h1>
-
-          <div className="search-product">
-            <input
-              type="text"
-              value={searchCode}
-              onChange={(e) => setSearchCode(e.target.value)}
-              placeholder="Enter Product Code"
-              disabled={loading}
-            />
-            <button onClick={handleSearchProduct} disabled={loading}>
-              {loading ? 'Searching...' : 'Add to Cart'}
-            </button>
-          </div>
-          {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
-
-          {foundProduct && (
-            <div className="found-product-info">
-              <p>Product Name: {foundProduct.nama_produk} | Price: Rp {foundProduct.harga_jual.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
-              </p>
+    return (
+      <>
+        <HeaderKasir onNewTransaction={handleNewTransaction} />
+        <KeyboardShortcuts 
+          onSearch={handleSearchProduct} 
+          onNewTransaction={handleNewTransaction} 
+          toggleSupervisorModal={showSupervisorModal ? handleCloseSupervisorModal : handleOpenSupervisor} 
+        />
+  
+        <div className="kasir-container" style={{ marginTop: '0' }}>
+          <div className="order-summary-section">
+            <h1>Ordered Products</h1>
+  
+            <div className="search-product">
+              <input
+                type="text"
+                value={searchCode}
+                onChange={(e) => setSearchCode(e.target.value)}
+                placeholder="Enter Product Code"
+                disabled={loading}
+              />
+              <button onClick={handleSearchProduct} disabled={loading}>
+                {loading ? 'Searching...' : 'Add to Cart'}
+              </button>
             </div>
-          )}
-
-          <div className="products-container" style={{ maxHeight: '272px', overflowY: 'auto' }} ref={tableRef}> 
-            <table className="products-table">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Code Item</th>
-                  <th>Item Name</th>
-                  <th>Qty</th>
-                  <th>Price</th>
-                  <th>Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{product.kode_produk}</td>
-                    <td>{product.nama_produk}</td>
-                    <td><span>{product.qty}</span></td>
-                    <td>{'Rp ' + (product.harga_jual).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
-                    <td>{'Rp ' + (product.harga_jual * product.qty).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
+            {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
+  
+            {foundProduct && (
+              <div className="found-product-info">
+                <p>Product Name: {foundProduct.nama_produk} | Price: Rp {foundProduct.harga_jual.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
+                </p>
+              </div>
+            )}
+  
+            <div className="products-container" style={{ maxHeight: '272px', overflowY: 'auto' }} ref={tableRef}> 
+              <table className="products-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Code Item</th>
+                    <th>Item Name</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
                   </tr>
-                ))}
-                {products.length < 5 && Array.from({ length: 5 - products.length }).map((_, index) => (
-                  <tr key={`empty-${index}`}>
-                    <td colSpan="6" style={{ textAlign: 'center', color: '#ccc' }}>- Empty -</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex-container" style={{ marginTop: '10px' }}>
-            <div style={{ flex: '1' }}>
-              <h5>Total Amount</h5>
-              <h3>{totalAmount}</h3>
+                </thead>
+                <tbody>
+                  {products.map((product, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{product.kode_produk}</td>
+                      <td>{product.nama_produk}</td>
+                      <td><span>{product.qty}</span></td>
+                      <td>{'Rp ' + (product.harga_jual).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
+                      <td>{'Rp ' + (product.harga_jual * product.qty).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
+                    </tr>
+                  ))}
+                  {products.length < 5 && Array.from({ length: 5 - products.length }).map((_, index) => (
+                    <tr key={`empty-${index}`}>
+                      <td colSpan="6" style={{ textAlign: 'center', color: '#ccc' }}>- Empty -</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div style={{ flex: '1', display: 'flex', alignItems: 'flex-end' }}>
-              <PaySectionKasir onPayment={handlePayment} />
+  
+            <div className="flex-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '20px' }}>
+              <div>"untuk nanti saya isi sendiri111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"</div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <div style={{ marginBottom: '10px' }}><h2>Total: {totalAmount}</h2></div>
+                <PaySectionKasir onPay={handlePayment} />
+              </div>
             </div>
           </div>
+  
+          {showSupervisorModal && (
+          <ModalSpvKasir 
+            showModal={showSupervisorModal} 
+            handleClose={handleCloseSupervisorModal} 
+          />
+        )}
+  
+          <FooterKasir />
         </div>
-      </div>
-
-      {showSupervisorModal && (
-        <ModalSpvKasir onClose={handleCloseSupervisorModal} />
-      )}
-
-      <FooterKasir />
-    </>
-  );
-};
-
+      </>
+    );
+  };
+  
 export default Kasir;

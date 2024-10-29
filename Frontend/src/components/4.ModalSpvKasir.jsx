@@ -110,7 +110,7 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleLogout}>
-          Log Out
+          Close
         </Button>
       </Modal.Footer>
     </Modal>
