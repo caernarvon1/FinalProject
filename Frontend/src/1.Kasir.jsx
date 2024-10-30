@@ -1,24 +1,25 @@
-// Kasir.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setProducts, addProduct, clearProducts } from './store/productsSlice'; // Sesuaikan path jika perlu
+import { setProducts, addProduct, clearProducts } from './store/productsSlice';
 import HeaderKasir from './components/1.HeaderKasir';
 import FooterKasir from './components/3.FooterKasir';
 import PaySectionKasir from './components/2.PaySectionKasir';
 import KeyboardShortcuts from './components/5.KShortcutKasir';
+import SProdukKasir from './components/5.SProdukKasir';
 import ModalSpvKasir from './components/4.ModalSpvKasir';
-import './1.Kasir.css'; 
+import './1.Kasir.css';
 
 const Kasir = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
+  
   const [searchCode, setSearchCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showSupervisorModal, setShowSupervisorModal] = useState(false);
   const [foundProduct, setFoundProduct] = useState(null);
-  
+
   const tableRef = useRef(null);
 
   useEffect(() => {
@@ -31,9 +32,7 @@ const Kasir = () => {
   useEffect(() => {
     if (products.length > 0) {
       localStorage.setItem('products', JSON.stringify(products));
-      if (tableRef.current) {
-        tableRef.current.scrollTop = tableRef.current.scrollHeight;
-      }
+      if (tableRef.current) tableRef.current.scrollTop = tableRef.current.scrollHeight;
     } else {
       localStorage.removeItem('products');
     }
@@ -60,7 +59,7 @@ const Kasir = () => {
           kode_produk: product.kode_produk, 
           nama_produk: product.nama_produk, 
           harga_jual: product.harga_jual, 
-          qty: 1 // Atur qty default ke 1
+          qty: 1 
         }));
         setFoundProduct(product); 
         setSearchCode('');
@@ -105,92 +104,96 @@ const Kasir = () => {
     .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
     .replace(/^/, 'Rp ');
 
-    return (
-      <>
-        <HeaderKasir onNewTransaction={handleNewTransaction} />
-        <KeyboardShortcuts 
-          onSearch={handleSearchProduct} 
-          onNewTransaction={handleNewTransaction} 
-          toggleSupervisorModal={showSupervisorModal ? handleCloseSupervisorModal : handleOpenSupervisor} 
-        />
-  
-        <div className="kasir-container" style={{ marginTop: '0' }}>
-          <div className="order-summary-section">
-            <h1>Ordered Products</h1>
-  
-            <div className="search-product">
-              <input
-                type="text"
-                value={searchCode}
-                onChange={(e) => setSearchCode(e.target.value)}
-                placeholder="Enter Product Code"
-                disabled={loading}
-              />
-              <button onClick={handleSearchProduct} disabled={loading}>
-                {loading ? 'Searching...' : 'Add to Cart'}
-              </button>
+  return (
+    <>
+      <HeaderKasir onNewTransaction={handleNewTransaction} />
+      <KeyboardShortcuts 
+        onSearch={handleSearchProduct} 
+        onNewTransaction={handleNewTransaction} 
+        toggleSupervisorModal={showSupervisorModal ? handleCloseSupervisorModal : handleOpenSupervisor}
+        showSupervisorModal={showSupervisorModal}
+      />
+
+      {/* Tambahkan komponen SProdukKasir */}
+      <SProdukKasir onSearch={handleSearchProduct} />
+
+      <div className="kasir-container" style={{ marginTop: '0' }}>
+        <div className="order-summary-section">
+          <h1>Ordered Products</h1>
+
+          <div className="search-product">
+            <input
+              type="text"
+              value={searchCode}
+              onChange={(e) => setSearchCode(e.target.value)}
+              placeholder="Enter Product Code"
+              disabled={loading}
+            />
+            <button onClick={handleSearchProduct} disabled={loading}>
+              {loading ? 'Searching...' : 'Add to Cart'}
+            </button>
+          </div>
+          {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
+
+          {foundProduct && (
+            <div className="found-product-info">
+              <p>Product Name: {foundProduct.nama_produk} | Price: Rp {foundProduct.harga_jual.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
+              </p>
             </div>
-            {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
-  
-            {foundProduct && (
-              <div className="found-product-info">
-                <p>Product Name: {foundProduct.nama_produk} | Price: Rp {foundProduct.harga_jual.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}
-                </p>
-              </div>
-            )}
-  
-            <div className="products-container" style={{ maxHeight: '272px', overflowY: 'auto' }} ref={tableRef}> 
-              <table className="products-table">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Code Item</th>
-                    <th>Item Name</th>
-                    <th>Qty</th>
-                    <th>Price</th>
-                    <th>Subtotal</th>
+          )}
+
+          <div className="products-container" style={{ maxHeight: '272px', overflowY: 'auto' }} ref={tableRef}> 
+            <table className="products-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Code Item</th>
+                  <th>Item Name</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((product, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{product.kode_produk}</td>
+                    <td>{product.nama_produk}</td>
+                    <td><span>{product.qty}</span></td>
+                    <td>{'Rp ' + (product.harga_jual).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
+                    <td>{'Rp ' + (product.harga_jual * product.qty).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {products.map((product, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{product.kode_produk}</td>
-                      <td>{product.nama_produk}</td>
-                      <td><span>{product.qty}</span></td>
-                      <td>{'Rp ' + (product.harga_jual).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
-                      <td>{'Rp ' + (product.harga_jual * product.qty).toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</td>
-                    </tr>
-                  ))}
-                  {products.length < 5 && Array.from({ length: 5 - products.length }).map((_, index) => (
-                    <tr key={`empty-${index}`}>
-                      <td colSpan="6" style={{ textAlign: 'center', color: '#ccc' }}>- Empty -</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-  
-            <div className="flex-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '20px' }}>
-              <div>"untuk nanti saya isi sendiri111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"</div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <div style={{ marginBottom: '10px' }}><h2>Total: {totalAmount}</h2></div>
-                <PaySectionKasir onPay={handlePayment} />
-              </div>
+                ))}
+                {products.length < 5 && Array.from({ length: 5 - products.length }).map((_, index) => (
+                  <tr key={`empty-${index}`}>
+                    <td colSpan="6" style={{ textAlign: 'center', color: '#ccc' }}>- Empty -</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '20px' }}>
+            <div>"untuk nanti saya isi sendiri111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"</div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+              <div style={{ marginBottom: '10px' }}><h2>Total: {totalAmount}</h2></div>
+              <PaySectionKasir onPay={handlePayment} />
             </div>
           </div>
-  
-          {showSupervisorModal && (
+        </div>
+
+        {showSupervisorModal && (
           <ModalSpvKasir 
             showModal={showSupervisorModal} 
             handleClose={handleCloseSupervisorModal} 
           />
         )}
-  
-          <FooterKasir />
-        </div>
-      </>
-    );
-  };
-  
+
+        <FooterKasir />
+      </div>
+    </>
+  );
+};
+
 export default Kasir;

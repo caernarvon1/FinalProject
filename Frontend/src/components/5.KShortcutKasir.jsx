@@ -1,32 +1,30 @@
 import React, { useEffect, useCallback } from 'react';
 
-const KeyboardShortcuts = ({ onSearch, onNewTransaction, toggleSupervisorModal }) => {
-  // Mendefinisikan fungsi handleKeyDown dengan useCallback
-  const handleKeyDown = useCallback((e) => {
-    console.log('Key pressed:', e.key); // Debugging untuk memeriksa tombol yang ditekan
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      onSearch();
-    } else if (e.key === 'F2') {
-      e.preventDefault();
-      onNewTransaction();
-    } else if (e.key === 'F3') {
-      e.preventDefault();
-      toggleSupervisorModal(); // Menangani F3 untuk toggle
-    }
-  }, [onSearch, onNewTransaction, toggleSupervisorModal]); // Mengganti onOpenSupervisor dengan toggleSupervisorModal
+const KeyboardShortcuts = ({ onNewTransaction, toggleSupervisorModal, showSupervisorModal }) => {
+  const handleKeyDown = useCallback(
+    (e) => {
+      console.log('Key pressed:', e.key); // Debugging untuk memeriksa tombol yang ditekan
+      if (e.key === 'F2' && !showSupervisorModal) {
+        // F2 hanya aktif jika modal supervisor tidak terbuka
+        e.preventDefault();
+        onNewTransaction();
+      } else if (e.key === 'F3' && !showSupervisorModal) {
+        // F3 hanya aktif jika modal supervisor tidak terbuka
+        e.preventDefault();
+        toggleSupervisorModal();
+      }
+    },
+    [onNewTransaction, toggleSupervisorModal, showSupervisorModal]
+  );
 
   useEffect(() => {
-    // Menambahkan event listener untuk keydown
     window.addEventListener('keydown', handleKeyDown);
-
-    // Menghapus event listener saat komponen unmounted
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleKeyDown]); // Menjadikan handleKeyDown sebagai dependensi
+  }, [handleKeyDown]);
 
-  return null; // Komponen ini tidak perlu merender apa pun
+  return null;
 };
 
 export default KeyboardShortcuts;
