@@ -19,4 +19,27 @@ router.get('/produk/:kode', async (req, res) => {
     }
 });
 
+// Memperbarui qty produk berdasarkan kode
+router.put('/produk/:kode', async (req, res) => {
+    const { kode } = req.params; // Mengambil kode produk dari parameter URL
+    const { qty } = req.body; // Mendapatkan qty baru dari body request
+
+    try {
+        // Query untuk memperbarui qty produk di PostgreSQL
+        const result = await pool.query(
+            'UPDATE produk SET qty = $1 WHERE kode_produk = $2 RETURNING *', // SQL query untuk mengubah qty
+            [qty, kode] // Menggunakan qty dan kode dari permintaan
+        );
+        
+        if (result.rowCount > 0) {
+            res.json(result.rows[0]); // Mengirimkan data produk yang telah diperbarui
+        } else {
+            res.status(404).json({ message: 'Produk tidak ditemukan' }); // Jika kode produk tidak ditemukan
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Terjadi kesalahan pada server' }); // Menangani kesalahan server
+    }
+});
+
 module.exports = router;

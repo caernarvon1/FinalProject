@@ -12,53 +12,80 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
   const [password, setPassword] = useState(''); // State untuk menyimpan password
   const [isAuthenticated, setIsAuthenticated] = useState(false); // State untuk mengecek status autentikasi
   const [errorMessage, setErrorMessage] = useState(''); // State untuk menyimpan pesan error
+  const [editedQty, setEditedQty] = useState(null); // State untuk menyimpan qty yang diubah sementara
 
   const lastProduct = products[products.length - 1]; // Mendapatkan produk terakhir dari daftar produk
 
   // Fungsi untuk menangani pengiriman formulir login
   const handleSubmit = (e) => {
-    e.preventDefault(); // Mencegah perilaku default form
-    const correctUsername = 'supervisor'; // Username yang benar
-    const correctPassword = 'passwordSuper'; // Password yang benar
+    e.preventDefault();
+    const correctUsername = 'supervisor';
+    const correctPassword = 'passwordSuper';
 
-    // Memeriksa kesesuaian username dan password
     if (username === correctUsername && password === correctPassword) {
-      setIsAuthenticated(true); // Menandai sebagai autentikasi berhasil
-      setErrorMessage(''); // Menghapus pesan error
+      setIsAuthenticated(true);
+      setErrorMessage('');
     } else {
-      setErrorMessage('Username atau kata sandi salah'); // Menampilkan pesan error jika autentikasi gagal
+      setErrorMessage('Incorrect username or password');
     }
   };
 
-  // Fungsi untuk mengubah jumlah produk
+  // Fungsi untuk mengubah qty sementara
   const handleQtyChange = (newQty) => {
     if (newQty >= 0 && lastProduct) {
-      const updatedProducts = [...products]; // Membuat salinan produk
-      updatedProducts[updatedProducts.length - 1].qty = newQty; // Memperbarui qty produk terakhir
-      dispatch(setProducts(updatedProducts)); // Mengirim aksi untuk memperbarui state produk di Redux
-      localStorage.setItem('products', JSON.stringify(updatedProducts)); // Menyimpan produk yang diperbarui ke localStorage
+      setEditedQty(newQty);
+    }
+  };
+
+  // Fungsi untuk menyimpan perubahan qty
+  const handleSave = async () => {
+    if (editedQty !== null && lastProduct) {
+      try {
+        // Mengirimkan permintaan PUT untuk memperbarui qty produk di backend
+        const response = await fetch(`/produk/${lastProduct.kode_produk}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ qty: editedQty }), // Mengirimkan qty baru
+        });
+
+        if (response.ok) {
+          const updatedProduct = await response.json(); // Mendapatkan data produk yang diperbarui dari respons
+          const updatedProducts = products.map((product) =>
+            product.kode_produk === updatedProduct.kode_produk ? updatedProduct : product
+          );
+
+          dispatch(setProducts(updatedProducts)); // Mengupdate Redux store dengan data produk yang baru
+          localStorage.setItem('products', JSON.stringify(updatedProducts)); // Menyimpan produk yang diperbarui ke localStorage
+        } else {
+          console.error('Gagal memperbarui produk'); // Pesan jika terjadi kesalahan pada server
+        }
+      } catch (error) {
+        console.error('Terjadi kesalahan:', error); // Menangani kesalahan saat permintaan gagal
+      }
     }
   };
 
   // Fungsi untuk menangani logout
   const handleLogout = () => {
-    setIsAuthenticated(false); // Mengubah status autentikasi
-    setUsername(''); // Menghapus username
-    setPassword(''); // Menghapus password
-    handleClose(); // Menutup modal
+    setIsAuthenticated(false);
+    setUsername('');
+    setPassword('');
+    handleClose();
   };
 
   return (
     <Modal show={isAuthenticated || showModal} onHide={handleClose} backdrop="static">
       <Modal.Header closeButton={false}>
-        <Modal.Title>Supervisor Login</Modal.Title> {/* Judul modal */}
+        <Modal.Title>Supervisor Login</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {isAuthenticated ? ( // Jika sudah autentikasi
+        {isAuthenticated ? (
           <div>
             <h2>You are logged in as a Supervisor</h2>
             <h4>Last item:</h4>
-            {lastProduct ? ( // Jika ada produk terakhir
+            {lastProduct ? (
               <table className="table">
                 <thead>
                   <tr>
@@ -74,20 +101,20 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
                     <td>
                       <input
                         type="number"
-                        value={lastProduct.qty}
-                        onChange={(e) => handleQtyChange(parseInt(e.target.value))} // Memperbarui jumlah saat diubah
-                        style={{ width: '60px', marginLeft: '10px' }} // Styling untuk input
+                        value={editedQty !== null ? editedQty : lastProduct.qty}
+                        onChange={(e) => handleQtyChange(parseInt(e.target.value))}
+                        style={{ width: '60px', marginLeft: '10px' }}
                       />
                     </td>
                   </tr>
                 </tbody>
               </table>
             ) : (
-              <p>No items available.</p> // Pesan jika tidak ada produk
+              <p>No items available.</p>
             )}
           </div>
         ) : (
-          <form onSubmit={handleSubmit}> {/* Form untuk login */}
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="username">Username:</label>
               <input
@@ -95,7 +122,7 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
                 className="form-control"
                 id="username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)} // Memperbarui state username saat diubah
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className="form-group">
@@ -105,16 +132,21 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
                 className="form-control"
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)} // Memperbarui state password saat diubah
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Menampilkan pesan error jika ada */}
-            <Button variant="primary" type="submit">Log-in</Button> {/* Tombol untuk login */}
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            <Button variant="primary" type="submit">Log-in</Button>
           </form>
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleLogout}> {/* Tombol untuk keluar */}
+        {isAuthenticated && (
+          <Button variant="success" onClick={handleSave}> {/* Tombol Save untuk menyimpan perubahan */}
+            Save
+          </Button>
+        )}
+        <Button variant="secondary" onClick={handleLogout}>
           Close
         </Button>
       </Modal.Footer>
@@ -122,4 +154,4 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
   );
 };
 
-export default ModalSpvKasir; // Ekspor komponen untuk digunakan di tempat lain
+export default ModalSpvKasir;
