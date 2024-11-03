@@ -4,19 +4,17 @@ import { Modal, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProducts } from '../store/productsSlice';
 
-// Komponen ModalSpvKasir menerima props untuk menampilkan modal dan menutupnya
 const ModalSpvKasir = ({ showModal, handleClose }) => {
-  const dispatch = useDispatch(); // Menginisialisasi dispatch untuk mengirimkan aksi Redux
-  const products = useSelector((state) => state.products); // Mengambil data produk dari Redux store
-  const [username, setUsername] = useState(''); // State untuk menyimpan username
-  const [password, setPassword] = useState(''); // State untuk menyimpan password
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // State untuk mengecek status autentikasi
-  const [errorMessage, setErrorMessage] = useState(''); // State untuk menyimpan pesan error
-  const [editedQty, setEditedQty] = useState(null); // State untuk menyimpan qty yang diubah sementara
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [editedQty, setEditedQty] = useState(null);
 
-  const lastProduct = products[products.length - 1]; // Mendapatkan produk terakhir dari daftar produk
+  const lastProduct = products[products.length - 1];
 
-  // Fungsi untuk menangani pengiriman formulir login
   const handleSubmit = (e) => {
     e.preventDefault();
     const correctUsername = 'supervisor';
@@ -30,44 +28,40 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
     }
   };
 
-  // Fungsi untuk mengubah qty sementara
   const handleQtyChange = (newQty) => {
     if (newQty >= 0 && lastProduct) {
       setEditedQty(newQty);
     }
   };
 
-  // Fungsi untuk menyimpan perubahan qty
   const handleSave = async () => {
     if (editedQty !== null && lastProduct) {
       try {
-        // Mengirimkan permintaan PUT untuk memperbarui qty produk di backend
-        const response = await fetch(`/produk/${lastProduct.kode_produk}`, {
+        const response = await fetch(`/api/produk/${lastProduct.kode_produk}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ qty: editedQty }), // Mengirimkan qty baru
+          body: JSON.stringify({ qty: editedQty }),
         });
 
         if (response.ok) {
-          const updatedProduct = await response.json(); // Mendapatkan data produk yang diperbarui dari respons
+          const updatedProduct = await response.json();
           const updatedProducts = products.map((product) =>
             product.kode_produk === updatedProduct.kode_produk ? updatedProduct : product
           );
 
-          dispatch(setProducts(updatedProducts)); // Mengupdate Redux store dengan data produk yang baru
-          localStorage.setItem('products', JSON.stringify(updatedProducts)); // Menyimpan produk yang diperbarui ke localStorage
+          dispatch(setProducts(updatedProducts));
+          localStorage.setItem('products', JSON.stringify(updatedProducts));
         } else {
-          console.error('Gagal memperbarui produk'); // Pesan jika terjadi kesalahan pada server
+          console.error('Gagal memperbarui produk');
         }
       } catch (error) {
-        console.error('Terjadi kesalahan:', error); // Menangani kesalahan saat permintaan gagal
+        console.error('Terjadi kesalahan:', error);
       }
     }
   };
 
-  // Fungsi untuk menangani logout
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUsername('');
@@ -142,7 +136,7 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
       </Modal.Body>
       <Modal.Footer>
         {isAuthenticated && (
-          <Button variant="success" onClick={handleSave}> {/* Tombol Save untuk menyimpan perubahan */}
+          <Button variant="success" onClick={handleSave}>
             Save
           </Button>
         )}

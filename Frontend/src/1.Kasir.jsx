@@ -76,10 +76,31 @@ const Kasir = () => {
     }
   };
 
-  const handlePayment = () => {
-    alert('Pembayaran berhasil dilakukan.');
-    dispatch(clearProducts());
-    localStorage.removeItem('products');
+  const handlePayment = async () => {
+    try {
+      // Membuat data transaksi yang akan dikirim ke backend
+      const transactionData = {
+        kasir: 'kasir_name', // Gantilah 'kasir_name' dengan nama kasir yang sesuai
+        total: products.reduce((acc, product) => acc + (product.harga_jual * product.qty), 0),
+        sales_items: products.map(product => ({
+          kode_produk: product.kode_produk,
+          qty: product.qty,
+          harga_jual: product.harga_jual
+        })),
+      };
+
+      // Mengirim permintaan POST ke backend untuk menyimpan transaksi
+      const response = await axios.post('http://localhost:5000/api/transactions', transactionData);
+
+      if (response.status === 201) {
+        alert('Pembayaran berhasil disimpan.');
+        dispatch(clearProducts()); // Membersihkan keranjang produk di Redux
+        localStorage.removeItem('products'); // Menghapus data produk dari localStorage
+      }
+    } catch (error) {
+      console.error('Error adding transaction:', error);
+      alert('Gagal menyimpan transaksi.');
+    }
   };
 
   const handleNewTransaction = () => {
