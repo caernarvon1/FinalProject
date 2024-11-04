@@ -34,31 +34,19 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (editedQty !== null && lastProduct) {
-      try {
-        const response = await fetch(`/api/produk/${lastProduct.kode_produk}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ qty: editedQty }),
-        });
+      const updatedProduct = {
+        ...lastProduct,
+        qty: editedQty, // Update qty sesuai nilai editedQty
+      };
 
-        if (response.ok) {
-          const updatedProduct = await response.json();
-          const updatedProducts = products.map((product) =>
-            product.kode_produk === updatedProduct.kode_produk ? updatedProduct : product
-          );
+      const updatedProducts = products.map((product) =>
+        product.kode_produk === updatedProduct.kode_produk ? updatedProduct : product
+      );
 
-          dispatch(setProducts(updatedProducts));
-          localStorage.setItem('products', JSON.stringify(updatedProducts));
-        } else {
-          console.error('Gagal memperbarui produk');
-        }
-      } catch (error) {
-        console.error('Terjadi kesalahan:', error);
-      }
+      dispatch(setProducts(updatedProducts)); // Mengupdate store Redux dengan produk yang sudah diperbarui
+      localStorage.setItem('products', JSON.stringify(updatedProducts)); // Menyimpan ke local storage
     }
   };
 

@@ -21,8 +21,16 @@ const productsSlice = createSlice({
     clearProducts: () => {
       return [];
     },
+    decreaseQty: (state, action) => {
+      const existingProduct = state.find(
+        (product) => product.kode_produk === action.payload.kode_produk
+      );
+      if (existingProduct) {
+        existingProduct.qty = Math.max(0, existingProduct.qty - action.payload.qty); // Mengurangi qty tanpa menjadi negatif
+      }
+    },
   },
 });
 
-export const { setProducts, addProduct, clearProducts } = productsSlice.actions;
+export const { setProducts, addProduct, clearProducts, decreaseQty } = productsSlice.actions;
 export default productsSlice.reducer;
