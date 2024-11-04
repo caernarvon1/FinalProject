@@ -1,5 +1,4 @@
-// Mengimpor dependensi yang diperlukan dari React, React-Bootstrap, dan Redux
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProducts } from '../store/productsSlice';
@@ -13,7 +12,19 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [editedQty, setEditedQty] = useState(null);
 
-  const lastProduct = products[products.length - 1];
+  useEffect(() => {
+    if (products.length > 0) {
+      const lastProduct = products[products.length - 1];
+      const totalQty = calculateTotalQty(lastProduct.kode_produk);
+      setEditedQty(totalQty);
+    }
+  }, [products]);
+
+  const calculateTotalQty = (kode_produk) => {
+    return products
+      .filter(product => product.kode_produk === kode_produk)
+      .reduce((total, product) => total + product.qty, 0);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,25 +39,32 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
     }
   };
 
-  const handleQtyChange = (newQty) => {
-    if (newQty >= 0 && lastProduct) {
-      setEditedQty(newQty);
+  const handleQtyDecrement = () => {
+    if (editedQty > 0) {
+      setEditedQty((prevQty) => prevQty - 1);
     }
   };
 
   const handleSave = () => {
-    if (editedQty !== null && lastProduct) {
-      const updatedProduct = {
-        ...lastProduct,
-        qty: editedQty, // Update qty sesuai nilai editedQty
-      };
+    if (editedQty !== null && products.length > 0) {
+      const lastProduct = products[products.length - 1];
+      const qtyDifference = calculateTotalQty(lastProduct.kode_produk) - editedQty;
 
-      const updatedProducts = products.map((product) =>
-        product.kode_produk === updatedProduct.kode_produk ? updatedProduct : product
-      );
+      if (qtyDifference > 0) {
+        const negativeProduct = {
+          ...lastProduct,
+          qty: -qtyDifference,
+        };
 
-      dispatch(setProducts(updatedProducts)); // Mengupdate store Redux dengan produk yang sudah diperbarui
-      localStorage.setItem('products', JSON.stringify(updatedProducts)); // Menyimpan ke local storage
+        const updatedProducts = products.map((product) =>
+          product.kode_produk === lastProduct.kode_produk ? product : product
+        );
+        
+        updatedProducts.push(negativeProduct);
+
+        dispatch(setProducts(updatedProducts));
+        localStorage.setItem('products', JSON.stringify(updatedProducts));
+      }
     }
   };
 
@@ -67,7 +85,7 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
           <div>
             <h2>You are logged in as a Supervisor</h2>
             <h4>Last item:</h4>
-            {lastProduct ? (
+            {products.length > 0 ? (
               <table className="table">
                 <thead>
                   <tr>
@@ -78,15 +96,23 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{lastProduct.kode_produk}</td>
-                    <td>{lastProduct.nama_produk}</td>
+                    <td>{products[products.length - 1].kode_produk}</td>
+                    <td>{products[products.length - 1].nama_produk}</td>
                     <td>
                       <input
                         type="number"
-                        value={editedQty !== null ? editedQty : lastProduct.qty}
-                        onChange={(e) => handleQtyChange(parseInt(e.target.value))}
+                        value={editedQty}
+                        readOnly
                         style={{ width: '60px', marginLeft: '10px' }}
                       />
+                      <button
+                        type="button"
+                        onClick={handleQtyDecrement}
+                        disabled={editedQty <= 0}
+                        style={{ marginLeft: '5px' }}
+                      >
+                        ▼
+                      </button>
                     </td>
                   </tr>
                 </tbody>
