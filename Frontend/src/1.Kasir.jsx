@@ -8,6 +8,7 @@ import PaySectionKasir from './components/2.PaySectionKasir';
 import KeyboardShortcuts from './components/5.KShortcutKasir';
 import SProdukKasir from './components/5.SProdukKasir';
 import ModalSpvKasir from './components/4.ModalSpvKasir';
+import ModalConfirmKasir from './components/4.ModalConfirmKasir'; // Import modal
 import './1.Kasir.css';
 
 const Kasir = () => {
@@ -19,6 +20,7 @@ const Kasir = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showSupervisorModal, setShowSupervisorModal] = useState(false);
   const [foundProduct, setFoundProduct] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const tableRef = useRef(null);
 
@@ -104,11 +106,16 @@ const Kasir = () => {
   };
 
   const handleNewTransaction = () => {
+    setShowConfirmModal(true); // Menampilkan modal konfirmasi
+  };
+
+  const handleNewTransactionConfirm = () => {
     dispatch(clearProducts());
     localStorage.removeItem('products');
     setSearchCode('');
     setFoundProduct(null); 
     setErrorMessage(''); 
+    setShowConfirmModal(false); // Menutup modal
   };
 
   const handleOpenSupervisor = () => {
@@ -133,6 +140,7 @@ const Kasir = () => {
         onNewTransaction={handleNewTransaction} 
         toggleSupervisorModal={showSupervisorModal ? handleCloseSupervisorModal : handleOpenSupervisor}
         showSupervisorModal={showSupervisorModal}
+        showConfirmModal={showConfirmModal}
       />
 
       {/* Tambahkan komponen SProdukKasir */}
@@ -204,15 +212,21 @@ const Kasir = () => {
           </div>
         </div>
 
+        <ModalConfirmKasir 
+          showModal={showConfirmModal} 
+          handleClose={() => setShowConfirmModal(false)} 
+          handleConfirm={handleNewTransactionConfirm} 
+        />
+
         {showSupervisorModal && (
           <ModalSpvKasir 
             showModal={showSupervisorModal} 
             handleClose={handleCloseSupervisorModal} 
           />
         )}
-
-        <FooterKasir />
       </div>
+
+      <FooterKasir />
     </>
   );
 };

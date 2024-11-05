@@ -48,7 +48,7 @@ function HeaderKasir({ onNewTransaction }) {
               <button 
                 className="btn btn-light" 
                 onClick={handleOpenSupervisorModal}
-                title="'F3' Supervisor"
+                title="'F4' Supervisor"
               >
                 <i className="fas fa-user-shield"></i> Supervisor
               </button>

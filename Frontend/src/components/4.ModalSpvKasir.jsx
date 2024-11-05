@@ -85,7 +85,7 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
       <Modal.Body>
         {isAuthenticated ? (
           <div>
-            <h2>You are logged in as a Supervisor</h2>
+            <h2 style={{ textAlign: 'center' }}>You are logged in as a Supervisor</h2>
             <h4>Last item:</h4>
             {products.length > 0 ? (
               <table className="table">
