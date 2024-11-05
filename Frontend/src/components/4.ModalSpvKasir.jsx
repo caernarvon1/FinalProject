@@ -10,15 +10,17 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [editedQty, setEditedQty] = useState(null);
+  const [editedQty, setEditedQty] = useState(0);
+  const [initialQty, setInitialQty] = useState(0);
 
   useEffect(() => {
     if (products.length > 0) {
       const lastProduct = products[products.length - 1];
       const totalQty = calculateTotalQty(lastProduct.kode_produk);
-      setEditedQty(totalQty);
+      setInitialQty(totalQty); // Menyimpan nilai awal qty
+      setEditedQty(totalQty);   // Menetapkan editedQty untuk ditampilkan
     }
-  }, [products]);
+  }, [products, showModal]); // Tambahkan showModal sebagai dependensi
 
   const calculateTotalQty = (kode_produk) => {
     return products
@@ -59,7 +61,7 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
         const updatedProducts = products.map((product) =>
           product.kode_produk === lastProduct.kode_produk ? product : product
         );
-        
+
         updatedProducts.push(negativeProduct);
 
         dispatch(setProducts(updatedProducts));
@@ -99,20 +101,52 @@ const ModalSpvKasir = ({ showModal, handleClose }) => {
                     <td>{products[products.length - 1].kode_produk}</td>
                     <td>{products[products.length - 1].nama_produk}</td>
                     <td>
-                      <input
-                        type="number"
-                        value={editedQty}
-                        readOnly
-                        style={{ width: '60px', marginLeft: '10px' }}
-                      />
-                      <button
-                        type="button"
-                        onClick={handleQtyDecrement}
-                        disabled={editedQty <= 0}
-                        style={{ marginLeft: '5px' }}
-                      >
-                        ▼
-                      </button>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        border: '1px solid #ced4da',
+                        borderRadius: '4px',
+                        overflow: 'hidden',
+                        width: '100px'
+                      }}>
+                        <button
+                          type="button"
+                          disabled={true} // Menonaktifkan tombol +
+                          style={{
+                            flex: '1',
+                            border: 'none',
+                            backgroundColor: '#f0f0f0',
+                            cursor: 'not-allowed' // Efek tidak bisa ditekan
+                          }}
+                        >
+                          +
+                        </button>
+                        <input
+                          type="number"
+                          value={editedQty}
+                          readOnly
+                          style={{
+                            width: '40px',
+                            textAlign: 'center',
+                            border: 'none',
+                            appearance: 'none',
+                            MozAppearance: 'textfield' // Firefox support
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleQtyDecrement}
+                          disabled={editedQty <= 0}
+                          style={{
+                            flex: '1',
+                            border: 'none',
+                            backgroundColor: '#f0f0f0',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          -
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
