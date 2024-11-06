@@ -10,7 +10,7 @@ import KeyboardShortcuts from './components/5.KShortcutKasir';
 import SProdukKasir from './components/5.SProdukKasir';
 import ModalSpvKasir from './components/4.ModalSpvKasir';
 import ModalConfirmKasir from './components/4.ModalConfirmKasir'; // Import modal
-import './1.Kasir.css';
+import './1.Kasir.css';  // Import CSS
 
 const Kasir = () => {
   const dispatch = useDispatch();
@@ -81,9 +81,8 @@ const Kasir = () => {
 
   const handlePayment = async () => {
     try {
-      // Membuat data transaksi yang akan dikirim ke backend
       const transactionData = {
-        kasir: 'kasir_name', // Gantilah 'kasir_name' dengan nama kasir yang sesuai
+        kasir: 'kasir_name',
         total: products.reduce((acc, product) => acc + (product.harga_jual * product.qty), 0),
         sales_items: products.map(product => ({
           kode_produk: product.kode_produk,
@@ -92,13 +91,12 @@ const Kasir = () => {
         })),
       };
 
-      // Mengirim permintaan POST ke backend untuk menyimpan transaksi
       const response = await axios.post('http://localhost:5000/api/transactions', transactionData);
 
       if (response.status === 201) {
         alert('Pembayaran berhasil disimpan.');
-        dispatch(clearProducts()); // Membersihkan keranjang produk di Redux
-        localStorage.removeItem('products'); // Menghapus data produk dari localStorage
+        dispatch(clearProducts());
+        localStorage.removeItem('products');
       }
     } catch (error) {
       console.error('Error adding transaction:', error);
@@ -107,7 +105,7 @@ const Kasir = () => {
   };
 
   const handleNewTransaction = () => {
-    setShowConfirmModal(true); // Menampilkan modal konfirmasi
+    setShowConfirmModal(true);
   };
 
   const handleNewTransactionConfirm = () => {
@@ -116,7 +114,7 @@ const Kasir = () => {
     setSearchCode('');
     setFoundProduct(null); 
     setErrorMessage(''); 
-    setShowConfirmModal(false); // Menutup modal
+    setShowConfirmModal(false);
   };
 
   const handleOpenSupervisor = () => {
@@ -143,11 +141,9 @@ const Kasir = () => {
         showSupervisorModal={showSupervisorModal}
         showConfirmModal={showConfirmModal}
       />
-
-      {/* Tambahkan komponen SProdukKasir */}
       <SProdukKasir onSearch={handleSearchProduct} />
 
-      <div className="kasir-container" style={{ marginTop: '0' }}>
+      <div className="kasir-container">
         <div className="order-summary-section">
           <h1>Ordered Products</h1>
 
@@ -204,12 +200,14 @@ const Kasir = () => {
             </table>
           </div>
 
-          <div className="flex-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '20px' }}>
-            <div>
+          <div className="flex-container">
+            <div className="info-box">
               <InformationBoxKasir />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-              <div style={{ marginBottom: '10px' }}><h2>Total: {totalAmount}</h2></div>
+            <div className="payment-section">
+              <div className="total-amount">
+                <h2>Total: {totalAmount}</h2>
+              </div>
               <PaySectionKasir onPay={handlePayment} />
             </div>
           </div>
