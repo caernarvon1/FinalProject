@@ -5,6 +5,7 @@ import { setProducts, addProduct, clearProducts } from './store/productsSlice';
 import HeaderKasir from './components/1.HeaderKasir';
 import FooterKasir from './components/3.FooterKasir';
 import PaySectionKasir from './components/2.PaySectionKasir';
+import InformationBoxKasir from './components/2.InfoBoxKasir';
 import KeyboardShortcuts from './components/5.KShortcutKasir';
 import SProdukKasir from './components/5.SProdukKasir';
 import ModalSpvKasir from './components/4.ModalSpvKasir';
@@ -204,7 +205,9 @@ const Kasir = () => {
           </div>
 
           <div className="flex-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '20px' }}>
-            <div>"untuk nanti saya isi sendiri111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"</div>
+            <div>
+              <InformationBoxKasir />
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
               <div style={{ marginBottom: '10px' }}><h2>Total: {totalAmount}</h2></div>
               <PaySectionKasir onPay={handlePayment} />

@@ -8,7 +8,7 @@ const ModalConfirmKasir = ({ showModal, handleClose, handleConfirm }) => {
         <Modal.Title>Confirmation</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ textAlign: 'justify' }}>
-        <p>Be careful, it will <b>REMOVE</b> any ordered products in previous transaction.</p>
+        <p>Attention! Please be careful! This action will <b>ERASED</b> any ordered products in the previous transaction.</p>
         <p>Are you sure you want to create a new transaction?</p>
       </Modal.Body>
       <Modal.Footer>
