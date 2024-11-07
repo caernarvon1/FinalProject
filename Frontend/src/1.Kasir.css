@@ -15,7 +15,9 @@
 
 /* 3. Gaya untuk info-box */
 .info-box {
-  width: 950px; /* Menentukan lebar secara manual dalam satuan pixel */
+  flex: 1;
+  min-width: 200px;
+  max-width: 100%;
   background-color: #f9f9f9; /* Bisa mengganti dengan warna yang sesuai */
   border-radius: 8px;
   margin-right: -5px;
@@ -24,7 +26,6 @@
 
 /* 4. Gaya untuk payment-section */
 .payment-section {
-  flex: 1; /* Membuat elemen ini fleksibel seperti info-box */
   margin-top: 16px;
   min-width: 200px; /* Lebar minimum untuk elemen payment */
   background-color: #f9f9f9;

@@ -15,7 +15,7 @@ const productsSlice = createSlice({
       if (existingProduct) {
         existingProduct.qty += action.payload.qty; // Update qty jika produk sudah ada
       } else {
-        state.push(action.payload); // Tambah produk baru
+        state.push({ ...action.payload, timestamp: new Date().toISOString() }); // Tambah produk baru dengan timestamp
       }
     },
     clearProducts: () => {
