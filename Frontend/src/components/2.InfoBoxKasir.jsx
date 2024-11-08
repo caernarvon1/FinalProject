@@ -1,25 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-const InfoBoxKasir = () => {
+const InfoBoxKasir = ({ logs, setLogs, resetLogs }) => {
   const products = useSelector((state) => state.products);
-  const [logs, setLogs] = useState([]);
+  const [localLogs, setLocalLogs] = useState(logs);
 
   useEffect(() => {
     if (products.length > logs.length) {
       const newProduct = products[products.length - 1];
-      setLogs((prevLogs) => [
-        `Product added successfully : ${newProduct.nama_produk}`,
-        ...prevLogs,
-      ]);
+      const newLogEntry = {
+        message: `Product added successfully : ${newProduct.nama_produk}`,
+        timestamp: newProduct.timestamp,
+      };
+      setLogs((prevLogs) => [newLogEntry, ...prevLogs]);
     } else if (products.length < logs.length) {
-      const removedProduct = logs[logs.length - 1].split(': ')[1];
-      setLogs((prevLogs) => [
-        `Product removed successfully : ${removedProduct}`,
-        ...prevLogs,
-      ]);
+      const removedProduct = logs[logs.length - 1].message.split(': ')[1];
+      const removedTimestamp = new Date().getTime(); // atau ambil dari sumber lain jika tersedia
+      const newLogEntry = {
+        message: `Product removed successfully : ${removedProduct}`,
+        timestamp: removedTimestamp,
+      };
+      setLogs((prevLogs) => [newLogEntry, ...prevLogs]);
     }
   }, [products]);
+
+  // Reset logs saat resetLogs dipanggil
+  useEffect(() => {
+    setLocalLogs([]);
+  }, [resetLogs]);
+
 
   return (
     <div className="card mt-3" style={{ height: '165px' }}>
@@ -41,10 +50,10 @@ const InfoBoxKasir = () => {
               className="list-group-item"
               style={{ display: 'flex', justifyContent: 'space-between' }}
             >
-              <span>{log}</span>
+              <span>{log.message}</span>
               <span>
-                {products[index]?.timestamp
-                  ? `${new Date(products[index].timestamp).toLocaleDateString()} | ${new Date(products[index].timestamp).toLocaleTimeString()}`
+                {log.timestamp
+                  ? `${new Date(log.timestamp).toLocaleDateString()} | ${new Date(log.timestamp).toLocaleTimeString()}`
                   : 'No timestamp'}
               </span>
             </li>

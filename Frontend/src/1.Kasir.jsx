@@ -22,6 +22,7 @@ const Kasir = () => {
   const [showSupervisorModal, setShowSupervisorModal] = useState(false);
   const [foundProduct, setFoundProduct] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [logs, setLogs] = useState([]); // Tambahkan state logs
 
   const tableRef = useRef(null);
 
@@ -108,12 +109,15 @@ const Kasir = () => {
     setShowConfirmModal(true);
   };
 
+  const resetLogs = () => setLogs([]); // Fungsi untuk mereset logs
+
   const handleNewTransactionConfirm = () => {
     dispatch(clearProducts());
     localStorage.removeItem('products');
     setSearchCode('');
     setFoundProduct(null); 
     setErrorMessage(''); 
+    resetLogs(); // Panggil resetLogs saat transaksi baru dikonfirmasi
     setShowConfirmModal(false);
   };
 
@@ -132,7 +136,7 @@ const Kasir = () => {
     .replace(/^/, 'Rp ');
 
   return (
-    <>
+    <React.Fragment>
       <HeaderKasir onNewTransaction={handleNewTransaction} />
       <KeyboardShortcuts 
         onSearch={handleSearchProduct} 
@@ -202,7 +206,7 @@ const Kasir = () => {
 
           <div className="flex-container">
             <div className="info-box">
-              <InformationBoxKasir />
+            <InformationBoxKasir logs={logs} setLogs={setLogs} resetLogs={resetLogs} />
             </div>
             <div className="payment-section">
               <div className="total-amount">
@@ -228,7 +232,7 @@ const Kasir = () => {
       </div>
 
       <FooterKasir />
-    </>
+    </React.Fragment>
   );
 };
 
