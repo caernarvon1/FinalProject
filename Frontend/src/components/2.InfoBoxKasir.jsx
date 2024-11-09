@@ -1,34 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 const InfoBoxKasir = ({ logs, setLogs, resetLogs }) => {
   const products = useSelector((state) => state.products);
   const [localLogs, setLocalLogs] = useState(logs);
 
-  useEffect(() => {
-    if (products.length > logs.length) {
-      const newProduct = products[products.length - 1];
-      const newLogEntry = {
-        message: `Product added successfully : ${newProduct.nama_produk}`,
-        timestamp: newProduct.timestamp,
-      };
-      setLogs((prevLogs) => [newLogEntry, ...prevLogs]);
-    } else if (products.length < logs.length) {
-      const removedProduct = logs[logs.length - 1].message.split(': ')[1];
-      const removedTimestamp = new Date().getTime(); // atau ambil dari sumber lain jika tersedia
-      const newLogEntry = {
-        message: `Product removed successfully : ${removedProduct}`,
-        timestamp: removedTimestamp,
-      };
-      setLogs((prevLogs) => [newLogEntry, ...prevLogs]);
-    }
-  }, [products]);
+  const handleLogChange = useCallback(() => {
+    const latestProduct = products[products.length - 1];
+    if (!latestProduct) return;
 
-  // Reset logs saat resetLogs dipanggil
-  useEffect(() => {
+    // Cek jika ada pengurangan qty (misalnya qty -1)
+    const qtyChange = latestProduct.qty < 0 ? 'decreased' : 'increased';
+    
+    // Tampilkan berapa qty yang berkurang
+    const qtyMessage = qtyChange === 'decreased'
+      ? `Update successful, Quantity of ${latestProduct.nama_produk} decreased by ${Math.abs(latestProduct.qty)}.`
+      : '';  // Untuk penambahan, tidak perlu pesan spesifik
+
+    // Ambil timestamp baru saat log ditambahkan
+    const newTimestamp = new Date().toISOString();
+
+    const newLogEntry = {
+      message: qtyMessage || `Product added successfully: ${latestProduct.nama_produk}.`,
+      timestamp: newTimestamp, // Gunakan timestamp yang baru
+    };
+
+    // Update logs dengan menambahkan pesan baru jika ada perubahan qty
+    setLogs((prevLogs) => [newLogEntry, ...prevLogs]);
+  }, [products, setLogs]);
+
+  // Handle log reset
+  const resetLogHandler = useCallback(() => {
     setLocalLogs([]);
-  }, [resetLogs]);
+  }, []);
 
+  React.useEffect(() => {
+    handleLogChange();
+  }, [handleLogChange]);
+
+  React.useEffect(() => {
+    if (resetLogs) {
+      resetLogHandler();
+    }
+  }, [resetLogs, resetLogHandler]);
 
   return (
     <div className="card mt-3" style={{ height: '165px' }}>
