@@ -212,7 +212,7 @@ const Kasir = () => {
               <div className="total-amount">
                 <h2>Total: {totalAmount}</h2>
               </div>
-              <PaySectionKasir onPay={handlePayment} />
+              <PaySectionKasir onPay={handlePayment} totalAmount={totalAmount} />
             </div>
           </div>
         </div>
