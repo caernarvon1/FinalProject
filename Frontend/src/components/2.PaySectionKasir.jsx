@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const PaySectionKasir = ({ onPay, totalAmount }) => {
+const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal }) => {
   const [paymentAmount, setPaymentAmount] = useState('Rp 0');
-  const [showModal, setShowModal] = useState(false);
-
-  const toggleModal = () => {
-    setShowModal(!showModal);
-  };
 
   const handlePaymentChange = (e) => {
     const value = e.target.value.replace(/[Rp.\s]/g, ''); // Hapus "Rp", titik, dan spasi

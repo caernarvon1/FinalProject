@@ -1,26 +1,26 @@
 import React, { useEffect, useCallback } from 'react';
 
-const KeyboardShortcuts = ({ onNewTransaction, toggleSupervisorModal, showSupervisorModal, showConfirmModal }) => {
+const KeyboardShortcuts = ({ onNewTransaction, toggleSupervisorModal, showSupervisorModal, showConfirmModal, togglePayModal }) => {
   const handleKeyDown = useCallback(
     (e) => {
       console.log('Key pressed:', e.key); // Debugging untuk memeriksa tombol yang ditekan
       if (showConfirmModal) {
-        // Jika modal konfirmasi terbuka, jangan biarkan tombol lain diproses
         e.preventDefault();
         return;
       }
 
       if (e.key === 'F2' && !showSupervisorModal) {
-        // F2 hanya aktif jika modal supervisor tidak terbuka
         e.preventDefault();
         onNewTransaction();
       } else if (e.key === 'F4' && !showSupervisorModal) {
-        // F4 hanya aktif jika modal supervisor tidak terbuka
         e.preventDefault();
         toggleSupervisorModal();
+      } else if (e.key === 'F8') {
+        e.preventDefault();
+        togglePayModal(); // Fungsi untuk membuka modal pembayaran
       }
     },
-    [onNewTransaction, toggleSupervisorModal, showSupervisorModal, showConfirmModal]
+    [onNewTransaction, toggleSupervisorModal, showSupervisorModal, showConfirmModal, togglePayModal]
   );
 
   useEffect(() => {

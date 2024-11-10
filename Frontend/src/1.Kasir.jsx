@@ -23,6 +23,8 @@ const Kasir = () => {
   const [foundProduct, setFoundProduct] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [logs, setLogs] = useState([]); // Tambahkan state logs
+  const [showPayModal, setShowPayModal] = useState(false);
+  const togglePayModal = () => setShowPayModal(!showPayModal);
 
   const tableRef = useRef(null);
 
@@ -145,6 +147,7 @@ const Kasir = () => {
         toggleSupervisorModal={showSupervisorModal ? handleCloseSupervisorModal : handleOpenSupervisor}
         showSupervisorModal={showSupervisorModal}
         showConfirmModal={showConfirmModal}
+        togglePayModal={togglePayModal} // Tambahkan prop togglePayModal
       />
       <SProdukKasir onSearch={handleSearchProduct} searchCode={searchCode} />
 
@@ -213,7 +216,12 @@ const Kasir = () => {
               <div className="total-amount">
                 <h2>Total: {totalAmount}</h2>
               </div>
-              <PaySectionKasir onPay={handlePayment} totalAmount={totalAmount} />
+              <PaySectionKasir 
+              onPay={handlePayment} 
+              totalAmount={totalAmount} 
+              toggleModal={togglePayModal} 
+              showModal={showPayModal} // Tambahkan kontrol untuk menampilkan modal// Tambahkan prop toggleModal
+              />
             </div>
           </div>
         </div>
