@@ -1,45 +1,29 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect } from 'react';
 
-const SProdukKasir = ({ onSearch }) => { // Menerima prop onSearch
-  const [typingTimeout, setTypingTimeout] = useState(null); // State untuk menyimpan timeout
+// Komponen SProdukKasir menerima dua props: onSearch (fungsi pencarian) dan searchCode (kode produk yang diinput)
+const SProdukKasir = ({ onSearch, searchCode }) => {
 
-  const handleKeyUp = useCallback(
-    (e) => {
-      console.log('Key pressed:', e.key); // Debugging untuk memeriksa tombol yang ditekan
-
-      // Cek jika angka pertama dimasukkan
-      if (!isNaN(e.key)) {
-        // Jika ada timeout sebelumnya, bersihkan
-        if (typingTimeout) {
-          clearTimeout(typingTimeout);
-        }
-
-        // Set timeout untuk menunggu 500 ms setelah terakhir kali tombol ditekan
-        const newTimeout = setTimeout(() => {
-          console.log('onSearch is called'); // Log untuk memeriksa pemanggilan onSearch
-          onSearch(e.key); // Panggil fungsi onSearch() setelah 500 ms tidak ada penekanan tombol
-          setTypingTimeout(null); // Reset timeout setelah memanggil onSearch
-        }, 500);
-
-        setTypingTimeout(newTimeout); // Simpan ID timeout yang baru diatur
-        console.log('Typing timeout set:', newTimeout); // Log ID timeout yang baru diatur
-      }
-    },
-    [onSearch, typingTimeout]
-  );
-
+  // Menggunakan useEffect untuk mendeteksi perubahan pada searchCode dan onSearch
   useEffect(() => {
-    window.addEventListener('keyup', handleKeyUp); // Ganti keydown dengan keyup
-    return () => {
-      window.removeEventListener('keyup', handleKeyUp); // Pastikan event dibersihkan
-      if (typingTimeout) {
-        clearTimeout(typingTimeout); // Hapus timeout saat komponen di-unmount
-        console.log('Typing timeout cleared on unmount:', typingTimeout); // Log timeout yang dibersihkan saat unmount
-      }
-    };
-  }, [handleKeyUp, typingTimeout]);
 
+    // Mengecek apakah searchCode memiliki nilai
+    if (searchCode) {
+
+      // Membuat timeout yang akan menunggu 500ms setelah terakhir kali searchCode berubah
+      // Setelah 500ms, fungsi onSearch dipanggil
+      const typingTimeout = setTimeout(() => {
+        onSearch(); // Panggil fungsi onSearch dari prop setelah 500ms
+      }, 500);
+
+      // Mengembalikan fungsi cleanup untuk membersihkan timeout saat searchCode berubah atau komponen di-unmount
+      return () => clearTimeout(typingTimeout); // Bersihkan timeout jika searchCode berubah
+    }
+
+    // Efek ini dijalankan kembali setiap kali searchCode atau onSearch berubah
+  }, [searchCode, onSearch]);
+
+  // Komponen tidak menampilkan elemen apa pun di layar
   return null;
 };
 
-export default SProdukKasir; // Ekspor komponen dengan nama yang benar
+export default SProdukKasir;

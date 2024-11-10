@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const PaySectionKasir = ({ onPay, totalAmount }) => {
@@ -18,11 +18,6 @@ const PaySectionKasir = ({ onPay, totalAmount }) => {
       setPaymentAmount(value ? Number(value) : 0);
     }
   };
-
-  // useEffect untuk memantau perubahan paymentAmount dan totalAmount
-  useEffect(() => {
-    console.log('paymentAmount:', paymentAmount, 'totalAmount:', totalAmount);
-  }, [paymentAmount, totalAmount]); // Akan dipanggil setiap kali paymentAmount atau totalAmount berubah
 
   // Fungsi untuk konversi totalAmount (jika berformat string dengan simbol seperti 'Rp') menjadi angka
   const getTotalAmountNumber = () => {
@@ -45,8 +40,17 @@ const PaySectionKasir = ({ onPay, totalAmount }) => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <p>Total Amount: {totalAmount}</p> {/* Menampilkan totalAmount di atas */}
-            
+            <Form.Group controlId="totalAmount">
+              <Form.Label>Total Amount:</Form.Label>
+              <input
+                type="text"
+                value={totalAmount}
+                readOnly
+                className="form-control" // Menjaga konsistensi tampilan
+                style={{ backgroundColor: '#f0f0f0', color: '#555' }} // Warna latar belakang dan teks langsung
+              />
+            </Form.Group>
+
             <Form.Group controlId="paymentAmount">
               <Form.Label>Amount Paid:</Form.Label>
               <input
@@ -57,7 +61,23 @@ const PaySectionKasir = ({ onPay, totalAmount }) => {
               />
             </Form.Group>
             
-            <p>Change: {paymentAmount >= totalAmountNumber ? (paymentAmount - totalAmountNumber).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) : 'Not enough payment'}</p>
+            <Form.Group controlId="changeAmount">
+              <Form.Label>Change:</Form.Label>
+              <input
+                type="text"
+                value={
+                  paymentAmount >= totalAmountNumber
+                  ? (paymentAmount - totalAmountNumber).toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                  })
+                : 'Not enough payment'
+              }
+              readOnly
+              className="form-control"
+              style={{ backgroundColor: '#f0f0f0', color: '#555' }} // Warna latar belakang dan teks langsung
+            />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>

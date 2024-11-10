@@ -76,6 +76,7 @@ const Kasir = () => {
       setErrorMessage('An error occurred while searching for the product');
       setFoundProduct(null); 
     } finally {
+      setSearchCode(''); // Mengosongkan kembali field teks
       setLoading(false);
     }
   };
@@ -145,7 +146,7 @@ const Kasir = () => {
         showSupervisorModal={showSupervisorModal}
         showConfirmModal={showConfirmModal}
       />
-      <SProdukKasir onSearch={handleSearchProduct} />
+      <SProdukKasir onSearch={handleSearchProduct} searchCode={searchCode} />
 
       <div className="kasir-container">
         <div className="order-summary-section">
