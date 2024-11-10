@@ -148,6 +148,7 @@ const Kasir = () => {
         showSupervisorModal={showSupervisorModal}
         showConfirmModal={showConfirmModal}
         togglePayModal={togglePayModal} // Tambahkan prop togglePayModal
+        showPayModal={showPayModal}
       />
       <SProdukKasir onSearch={handleSearchProduct} searchCode={searchCode} />
 

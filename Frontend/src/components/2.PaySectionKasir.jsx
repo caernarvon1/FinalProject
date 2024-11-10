@@ -33,7 +33,12 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal }) => {
   return (
     <>
       <div className="d-flex justify-content-between p-3 bg-light border rounded mt-3">
-        <Button onClick={toggleModal} variant="primary" style={{ width: '250px' }}>
+        <Button 
+        onClick={toggleModal} 
+        variant="primary" 
+        style={{ width: '250px' }}
+        title="'F8' Proceed"
+        >
           Proceed
         </Button>
       </div>
