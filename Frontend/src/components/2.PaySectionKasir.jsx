@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import ModalInvoiceKasir from './4.ModalInvoiceKasir';
 
 const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTransaction }) => {
   const [paymentAmount, setPaymentAmount] = useState('Rp 0');
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [invoiceData, setInvoiceData] = useState(null);
 
   const handlePaymentChange = (e) => {
     const value = e.target.value.replace(/[Rp.\s]/g, ''); // Hapus "Rp", titik, dan spasi
@@ -29,16 +32,30 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTran
     setPaymentAmount('Rp 0');
     toggleModal();
     onNewTransaction();  // Memanggil fungsi untuk mereset tampilan di Kasir.jsx
+
+    // Mengumpulkan data untuk invoice
+    const formattedDate = new Date().toLocaleDateString();
+    const items = [
+      { name: 'Item 1', price: 'Rp 30.000' },
+      { name: 'Item 2', price: 'Rp 30.000' },
+    ];
+    const receiptNumber = '12547865';
+    const manager = 'Lor T.';
+    const address = '896 Rigoberto Gardens Apt. 838 Kuhnstad, BC X5T5C2';
+
+    // Set data invoice
+    setInvoiceData({ items, totalAmount, receiptNumber, manager, address, formattedDate });
+    setShowInvoiceModal(true); // Tampilkan modal invoice setelah pembayaran
   };
 
   return (
     <>
       <div className="d-flex justify-content-between p-3 bg-light border rounded mt-3">
         <Button 
-        onClick={toggleModal} 
-        variant="primary" 
-        style={{ width: '250px' }}
-        title="'F8' Proceed"
+          onClick={toggleModal} 
+          variant="primary" 
+          style={{ width: '250px' }}
+          title="'F8' Proceed"
         >
           Proceed
         </Button>
@@ -107,6 +124,19 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTran
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Modal Invoice */}
+      {showInvoiceModal && invoiceData && (
+        <ModalInvoiceKasir
+          items={invoiceData.items}
+          totalAmount={invoiceData.totalAmount}
+          receiptNumber={invoiceData.receiptNumber}
+          manager={invoiceData.manager}
+          address={invoiceData.address}
+          formattedDate={invoiceData.formattedDate}
+          onClose={() => setShowInvoiceModal(false)} // Fungsi untuk menutup modal invoice
+        />
+      )}
     </>
   );
 };

@@ -60,7 +60,9 @@ const InfoBoxKasir = ({ logs, setLogs, resetLogs }) => {
         <ul className="list-group list-group-flush">
           {logs.length === 0 ? (
             <li className="list-group-item">
-              <span>Welcome</span>
+              <span>Welcome back, please input the goods into the cart immediately.</span>
+              <br />
+              <span>and have a nice day.</span>
             </li>
           ) : (
             logs.map((log, index) => (
