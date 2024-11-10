@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal }) => {
+const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTransaction }) => {
   const [paymentAmount, setPaymentAmount] = useState('Rp 0');
 
   const handlePaymentChange = (e) => {
@@ -28,6 +28,7 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal }) => {
     onPay(payment);
     setPaymentAmount('Rp 0');
     toggleModal();
+    onNewTransaction();  // Memanggil fungsi untuk mereset tampilan di Kasir.jsx
   };
 
   return (

@@ -108,6 +108,22 @@ const Kasir = () => {
     }
   };
 
+  const onNewTransaction = () => {
+    // Reset semua produk
+    dispatch(clearProducts());
+    localStorage.removeItem('products');
+
+    // Reset pencarian dan pesan kesalahan
+    setSearchCode('');
+    setFoundProduct(null);
+    setErrorMessage('');
+
+    // Reset logs jika ada
+    resetLogs();
+  };
+
+
+
   const handleNewTransaction = () => {
     setShowConfirmModal(true);
   };
@@ -222,6 +238,7 @@ const Kasir = () => {
               totalAmount={totalAmount} 
               toggleModal={togglePayModal} 
               showModal={showPayModal} // Tambahkan kontrol untuk menampilkan modal// Tambahkan prop toggleModal
+              onNewTransaction={onNewTransaction}
               />
             </div>
           </div>

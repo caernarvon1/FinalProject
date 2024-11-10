@@ -58,20 +58,26 @@ const InfoBoxKasir = ({ logs, setLogs, resetLogs }) => {
         }}
       >
         <ul className="list-group list-group-flush">
-          {logs.map((log, index) => (
-            <li
-              key={index}
-              className="list-group-item"
-              style={{ display: 'flex', justifyContent: 'space-between' }}
-            >
-              <span>{log.message}</span>
-              <span>
-                {log.timestamp
-                  ? `${new Date(log.timestamp).toLocaleDateString()} | ${new Date(log.timestamp).toLocaleTimeString()}`
-                  : 'No timestamp'}
-              </span>
+          {logs.length === 0 ? (
+            <li className="list-group-item">
+              <span>Welcome</span>
             </li>
-          ))}
+          ) : (
+            logs.map((log, index) => (
+              <li
+                key={index}
+                className="list-group-item"
+                style={{ display: 'flex', justifyContent: 'space-between' }}
+              >
+                <span>{log.message}</span>
+                <span>
+                  {log.timestamp
+                    ? `${new Date(log.timestamp).toLocaleDateString()} | ${new Date(log.timestamp).toLocaleTimeString()}`
+                    : 'No timestamp'}
+                </span>
+              </li>
+            ))
+          )}
         </ul>
       </div>
     </div>
