@@ -28,13 +28,17 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTran
 
   const handlePay = () => {
     const payment = Number(paymentAmount.replace(/[Rp.\s]/g, '')); // Hapus "Rp" dan titik sebelum mengirim ke onPay
+    const changeAmount = payment >= totalAmountNumber ?
+    `Rp ${(payment - totalAmountNumber).toLocaleString('id-ID')}` : 
+    'Not enough payment';
+
     onPay(payment);
     setPaymentAmount('Rp 0');
     toggleModal();
     onNewTransaction();  // Memanggil fungsi untuk mereset tampilan di Kasir.jsx
 
     // Mengumpulkan data untuk invoice
-    const formattedDate = new Date().toLocaleDateString();
+    const formattedDate = new Date().toLocaleString();
     const items = products.map((product) => ({
       name: product.nama_produk,
       price: 'Rp ' + (product.harga_jual * product.qty).toLocaleString('id-ID'),
@@ -43,10 +47,10 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTran
     }));
     const receiptNumber = '12547865';
     const manager = 'Lor T.';
-    const address = '896 Rigoberto Gardens Apt. 838 Kuhnstad, BC X5T5C2';
+    const address = '007 Slate Quay, Caernarvon, Gwynedd, LL55 2RS, Bandung, Indonesia';
 
     // Set data invoice
-    setInvoiceData({ items, totalAmount, receiptNumber, manager, address, formattedDate });
+    setInvoiceData({ items, totalAmount, receiptNumber, manager, address, formattedDate, paymentAmount, changeAmount });
     setShowInvoiceModal(true); // Tampilkan modal invoice setelah pembayaran
   };
 
@@ -70,7 +74,7 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTran
         <Modal.Body>
           <Form>
             <Form.Group controlId="totalAmount">
-              <Form.Label>Total Amount:</Form.Label>
+              <Form.Label>Total Price:</Form.Label>
               <input
                 type="text"
                 value={totalAmount}
@@ -136,6 +140,8 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTran
           manager={invoiceData.manager}
           address={invoiceData.address}
           formattedDate={invoiceData.formattedDate}
+          paymentAmount={invoiceData.paymentAmount} 
+          changeAmount={invoiceData.changeAmount}
           onClose={() => setShowInvoiceModal(false)} // Fungsi untuk menutup modal invoice
         />
       )}

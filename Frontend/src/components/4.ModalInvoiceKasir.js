@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address, formattedDate }) => {
+const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address, formattedDate, paymentAmount, changeAmount }) => {
   useEffect(() => {
     const invoiceWindow = window.open('', '_blank', 'width=400,height=600');
     invoiceWindow.document.write(`
@@ -9,7 +9,7 @@ const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address
         <title>Invoice</title>
         <style>
           body { font-family: monospace; text-align: center; }
-          .invoice-item { display: flex; justify-content: space-between; }
+          .invoice-item { display: flex; text-align: left; }
           .invoice-item .name { flex: 2; }
           .invoice-item .qty { flex: 1; text-align: center; }
           .invoice-item .price, .invoice-item .total { flex: 1; text-align: right; }
@@ -19,7 +19,7 @@ const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address
         </style>
       </head>
       <body>
-        <h2>SHOP'S</h2>
+        <h2>ALPENFOHN'S</h2>
         <p>Receipt: ${receiptNumber}</p>
         <p>Manager: ${manager}</p>
         <p>Address: ${address}</p>
@@ -30,27 +30,24 @@ const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address
             <div class="invoice-item">
               <span class="name">${item.name}</span>
               <span class="qty">${item.qty}</span>
-              <span class="price">${'Rp ' + item.price.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</span>
               <span class="hargajual">${'Rp ' + item.harga_jual.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</span>
+              <span class="price">${item.price.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</span>
             </div>
           `).join('')}
         </div>
 
         <hr />
-        <p>Total..................... ${totalAmount}</p>
-        <p>xxxx xxxx xxxx 1234 Visa/5544</p>
+        <p>Total Price..................... ${totalAmount}</p>
+        <p>Amount Paid..................... ${paymentAmount}</p>
+        <p>Change..................... ${changeAmount}</p>
         <hr />
         
         <p style="font-weight: bold;">THANK YOU FOR SHOPPING!</p>
-        
-        <div class="barcode">
-          <img src="barcode-placeholder.png" alt="barcode" style="width: 100%;" />
-        </div>
       </body>
       </html>
     `);
     invoiceWindow.document.close();
-  }, [items, totalAmount, receiptNumber, manager, address, formattedDate]);
+  }, [items, totalAmount, receiptNumber, manager, address, formattedDate, paymentAmount, changeAmount]);
 
   return null;
 };
