@@ -9,7 +9,8 @@ import InformationBoxKasir from './components/2.InfoBoxKasir';
 import KeyboardShortcuts from './components/5.KShortcutKasir';
 import SProdukKasir from './components/5.SProdukKasir';
 import ModalSpvKasir from './components/4.ModalSpvKasir';
-import ModalConfirmKasir from './components/4.ModalConfirmKasir'; // Import modal
+import ModalConfirmKasir from './components/4.ModalConfirmKasir'; 
+import BarcodeScanner from './components/0.BarcodeScanner';
 import './1.Kasir.css';  // Import CSS
 
 const Kasir = () => {
@@ -24,7 +25,11 @@ const Kasir = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [logs, setLogs] = useState([]); // Tambahkan state logs
   const [showPayModal, setShowPayModal] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  
+  
   const togglePayModal = () => setShowPayModal(!showPayModal);
+  const toggleScanner = () => setShowScanner(!showScanner);
 
   const tableRef = useRef(null);
 
@@ -122,8 +127,6 @@ const Kasir = () => {
     resetLogs();
   };
 
-
-
   const handleNewTransaction = () => {
     setShowConfirmModal(true);
   };
@@ -154,6 +157,11 @@ const Kasir = () => {
     .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')
     .replace(/^/, 'Rp ');
 
+    const onBarcodeDetected = (barcodeData) => {
+      setSearchCode(barcodeData); // Mengisi searchCode dengan data barcode
+      handleSearchProduct();      // Memanggil fungsi pencarian produk
+    };
+
   return (
     <React.Fragment>
       <HeaderKasir onNewTransaction={handleNewTransaction} />
@@ -183,7 +191,11 @@ const Kasir = () => {
             <button onClick={handleSearchProduct} disabled={loading}>
               {loading ? 'Searching...' : 'Add to Cart'}
             </button>
+            <button onClick={toggleScanner}>
+            Scan Barcode
+            </button>
           </div>
+          {showScanner && <BarcodeScanner onBarcodeDetected={onBarcodeDetected} showScanner={showScanner} onClose={() => setShowScanner(false)} />}
           {errorMessage && <p className="error-message" style={{ color: 'red' }}>{errorMessage}</p>}
 
           {foundProduct && (
