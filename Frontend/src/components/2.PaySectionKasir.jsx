@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import ModalInvoiceKasir from './4.ModalInvoiceKasir';
 
-const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTransaction }) => {
+const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTransaction, products }) => {
   const [paymentAmount, setPaymentAmount] = useState('Rp 0');
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [invoiceData, setInvoiceData] = useState(null);
@@ -35,10 +35,12 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTran
 
     // Mengumpulkan data untuk invoice
     const formattedDate = new Date().toLocaleDateString();
-    const items = [
-      { name: 'Item 1', price: 'Rp 30.000' },
-      { name: 'Item 2', price: 'Rp 30.000' },
-    ];
+    const items = products.map((product) => ({
+      name: product.nama_produk,
+      price: 'Rp ' + (product.harga_jual * product.qty).toLocaleString('id-ID'),
+      qty: product.qty,
+      harga_jual: product.harga_jual
+    }));
     const receiptNumber = '12547865';
     const manager = 'Lor T.';
     const address = '896 Rigoberto Gardens Apt. 838 Kuhnstad, BC X5T5C2';
@@ -128,7 +130,7 @@ const PaySectionKasir = ({ onPay, totalAmount, toggleModal, showModal, onNewTran
       {/* Modal Invoice */}
       {showInvoiceModal && invoiceData && (
         <ModalInvoiceKasir
-          items={invoiceData.items}
+          items={invoiceData.items} // Data produk di-invoice
           totalAmount={invoiceData.totalAmount}
           receiptNumber={invoiceData.receiptNumber}
           manager={invoiceData.manager}

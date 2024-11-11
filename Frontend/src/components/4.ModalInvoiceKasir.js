@@ -1,4 +1,3 @@
-// 4.ModalInvoiceKasir.js
 import React, { useEffect } from 'react';
 
 const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address, formattedDate }) => {
@@ -11,6 +10,10 @@ const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address
         <style>
           body { font-family: monospace; text-align: center; }
           .invoice-item { display: flex; justify-content: space-between; }
+          .invoice-item .name { flex: 2; }
+          .invoice-item .qty { flex: 1; text-align: center; }
+          .invoice-item .price, .invoice-item .total { flex: 1; text-align: right; }
+          .invoice-item .hargajual { flex: 1; text-align: right; }
           hr { border: none; border-top: 1px dashed #000; margin: 10px 0; }
           .barcode { margin-top: 20px; }
         </style>
@@ -24,7 +27,12 @@ const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address
         
         <div style="margin-top: 20px;">
           ${items.map(item => `
-            <div class="invoice-item"><span>${item.name}</span><span>${item.price}</span></div>
+            <div class="invoice-item">
+              <span class="name">${item.name}</span>
+              <span class="qty">${item.qty}</span>
+              <span class="price">${'Rp ' + item.price.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</span>
+              <span class="hargajual">${'Rp ' + item.harga_jual.toLocaleString('id-ID', { style: 'decimal' }).replace(',', '.').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</span>
+            </div>
           `).join('')}
         </div>
 
@@ -44,7 +52,7 @@ const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address
     invoiceWindow.document.close();
   }, [items, totalAmount, receiptNumber, manager, address, formattedDate]);
 
-  return null; // Komponen ini hanya membuka jendela, jadi tidak perlu menampilkan UI
+  return null;
 };
 
 export default ModalInvoiceKasir;

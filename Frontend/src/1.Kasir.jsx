@@ -239,6 +239,7 @@ const Kasir = () => {
               toggleModal={togglePayModal} 
               showModal={showPayModal} // Tambahkan kontrol untuk menampilkan modal// Tambahkan prop toggleModal
               onNewTransaction={onNewTransaction}
+              products={products} //prop yang diteruskan ke komponen PaySectionKasir
               />
             </div>
           </div>
