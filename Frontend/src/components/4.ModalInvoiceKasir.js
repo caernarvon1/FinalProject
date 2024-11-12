@@ -14,6 +14,15 @@ const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address
           .invoice-item .qty { flex: 1; text-align: center; }
           .invoice-item .price, .invoice-item .total { flex: 1; text-align: right; }
           .invoice-item .hargajual { flex: 1; text-align: right; }
+          .amount-row { display: flex; justify-content: space-between; margin: 5px 0; }
+          .amount-row span:first-child { flex: 1; text-align: left; }
+          .amount-row span:last-child { text-align: right; }
+          .dots::before {
+            content: '';
+            flex: 1;
+            border-bottom: 1px dotted #000;
+            margin: 0 5px;
+          }
           hr { border: none; border-top: 1px dashed #000; margin: 10px 0; }
           .barcode { margin-top: 20px; }
         </style>
@@ -37,9 +46,21 @@ const ModalInvoiceKasir = ({ items, totalAmount, receiptNumber, manager, address
         </div>
 
         <hr />
-        <p>Total Price..................... ${totalAmount}</p>
-        <p>Amount Paid..................... ${paymentAmount}</p>
-        <p>Change..................... ${changeAmount}</p>
+        <div class="amount-row">
+          <span>Total Price</span>
+          <span class="dots"></span>
+          <span>${totalAmount}</span>
+        </div>
+        <div class="amount-row">
+          <span>Amount Paid</span>
+          <span class="dots"></span>
+          <span>${paymentAmount}</span>
+        </div>
+        <div class="amount-row">
+          <span>Change</span>
+          <span class="dots"></span>
+          <span>${changeAmount}</span>
+        </div>
         <hr />
         
         <p style="font-weight: bold;">THANK YOU FOR SHOPPING!</p>

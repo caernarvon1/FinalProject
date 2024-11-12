@@ -6,9 +6,8 @@ const BarcodeScanner = ({ onBarcodeDetected, showScanner, onClose }) => {
   const videoRef = useRef(null);
   const [barcodeData, setBarcodeData] = useState('');
   const [scanning, setScanning] = useState(false);
-  const [autoClose, setAutoClose] = useState(true); // State untuk toggle auto close
+  const [autoClose, setAutoClose] = useState(true);
 
-  // Inisialisasi webcam dan deteksi barcode
   useEffect(() => {
     if (showScanner) {
       const startScanning = async () => {
@@ -23,7 +22,6 @@ const BarcodeScanner = ({ onBarcodeDetected, showScanner, onClose }) => {
 
       startScanning();
       
-      // Deteksi barcode pada interval
       const detectBarcode = () => {
         const video = videoRef.current;
         const canvas = document.createElement('canvas');
@@ -43,7 +41,7 @@ const BarcodeScanner = ({ onBarcodeDetected, showScanner, onClose }) => {
           onBarcodeDetected(code.data);
           setScanning(false);
           
-          if (autoClose) onClose(); // Tutup modal jika autoClose true
+          if (autoClose) onClose();
         }
       };
 
@@ -83,13 +81,14 @@ const BarcodeScanner = ({ onBarcodeDetected, showScanner, onClose }) => {
             </div>
           )}
         </div>
-        <Form.Check 
-          type="switch"
-          label="Close Automatically After Scan"
-          checked={autoClose}
-          onChange={() => setAutoClose(prev => !prev)}
-          className="mt-3"
-        />
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <span>Close Automatically After Scan</span>
+          <Form.Check 
+            type="switch"
+            checked={autoClose}
+            onChange={() => setAutoClose(prev => !prev)}
+          />
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClose}>Close</Button>
